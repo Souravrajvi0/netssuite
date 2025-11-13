@@ -2,6 +2,10 @@ TDS MASTER CONFIGURATION
 
 Purpose: Configure Tax Deducted at Source (TDS) rules and rates.
 
+QUICK ACCESS:
+- [CREATE:TDS_MASTER] - Create a new TDS Master record
+- [LIST:TDS_MASTER] - View all TDS Master records
+
 Navigation Path: AG Taxation > Master Data > TDS Master > New
 
 MANDATORY FIELDS:

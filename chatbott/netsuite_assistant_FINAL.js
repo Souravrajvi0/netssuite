@@ -2,1418 +2,1217 @@
  * @NApiVersion 2.1
  * @NScriptType Suitelet
  * @NModuleScope SameAccount
- * 
- * Universal NetSuite Assistant Framework with Knowledge Base Search
- * FINAL VERSION WITH INTEGRATED SEARCH
- * 
- * Version: 2.0 - Knowledge Base Integration
+ *
+ * AGSuite AI Knowledge Base Assistant - FINAL PRODUCTION VERSION
+ * Multi-Client Support with Dynamic URL Generation
+ *
+ * Version: 3.0 - Complete Multi-Client Support
  */
 
-define(['N/ui/serverWidget', 'N/llm', 'N/log', 'N/search', 'N/runtime', 'N/cache', 'N/file'], 
-    (serverWidget, llm, log, search, runtime, cache, file) => {
+define(['N/ui/serverWidget', 'N/llm', 'N/log', 'N/runtime', 'N/cache', 'N/file', 'N/url'],
+    (serverWidget, llm, log, runtime, cache, file, url) => {
 
     // ========================================
-    // KNOWLEDGE BASE CONFIGURATION
+    // CONFIGURATION - UPDATE PER CLIENT
     // ========================================
-    
+
     const KNOWLEDGE_BASE = {
-        // TODO: Replace with your actual Internal ID after uploading articles_index_with_internal_ids.json
-        INDEX_FILE_ID: '3139',
+        // TODO: Replace with your actual Internal ID after uploading articles_index.json
+        INDEX_FILE_ID: '3139', // UPDATE THIS with your articles_index.json Internal ID
         enabled: true,
         cache_ttl: 3600 // Cache index for 1 hour
     };
 
     // ========================================
-    // MODULE REGISTRY
+    // DYNAMIC URL MAPPINGS - UPDATE PER CLIENT
     // ========================================
-    
-    const MODULES = {
-        tds: {
-            id: 'tds',
-            name: 'TDS Master',
-            description: 'Manage TDS records, sections, and rates',
-            keywords: ['tds', 'tax deduction', 'section 194', 'withholding'],
-            actions: ['create', 'view'],
-            enabled: true
+    // For each client deployment, update ONLY the rectypes
+    // Everything else stays the same!
+
+    const URL_MAPPINGS = {
+        // TDS Related
+        TDS_MASTER: {
+            recordType: 'customrecord_agtax_tdsmaster',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1042', // UPDATE rectype per client
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1042', // UPDATE rectype per client
+            label: 'TDS Master'
         },
-        agtax: {
-            id: 'agtax',
-            name: 'AG Tax Matrix',
-            description: 'Manage GST tax codes and rates',
-            keywords: ['ag tax', 'gst', 'cgst', 'sgst', 'igst', 'tax code'],
-            actions: ['create', 'view'],
-            enabled: true
+
+        TDS_PAYMENT: {
+            recordType: 'customrecord_agtax_tds_payment',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1044',
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1044',
+            label: 'TDS Payment'
+        },
+
+        TDS_CHALLAN: {
+            recordType: 'customrecord_agtax_tds_challan',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1045',
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1045',
+            label: 'TDS Challan'
+        },
+
+        TDS_SECTION: {
+            recordType: 'customrecord_agtax_tds_section',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1043',
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1043',
+            label: 'TDS Section'
+        },
+
+        // AG Tax Related
+        AGTAX_MATRIX: {
+            recordType: 'customrecord_agtax_code_matrix',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1028',
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1028',
+            label: 'AG Tax Matrix'
+        },
+
+        FINANCIAL_YEAR: {
+            recordType: 'customrecord_agtax_fy_master',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1030',
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1030',
+            label: 'Financial Year Master'
+        },
+
+        HSN_SAC: {
+            recordType: 'customrecord_agtax_hsn_sac',
+            createUrl: '/app/common/custom/custrecordentry.nl?rectype=1031',
+            listUrl: '/app/common/custom/custrecordentrylist.nl?rectype=1031',
+            label: 'HSN/SAC Code'
+        },
+
+        // Standard NetSuite Records (work automatically across all clients)
+        TAX_CODE: {
+            recordType: 'salestaxitem',
+            label: 'Tax Code'
+        },
+
+        TAX_GROUP: {
+            recordType: 'taxgroup',
+            label: 'Tax Group'
+        },
+
+        CUSTOMER: {
+            recordType: 'customer',
+            label: 'Customer'
+        },
+
+        VENDOR: {
+            recordType: 'vendor',
+            label: 'Vendor'
+        },
+
+        ITEM: {
+            recordType: 'inventoryitem',
+            label: 'Item'
+        },
+
+        ACCOUNT: {
+            recordType: 'account',
+            label: 'Account'
+        },
+
+        INVOICE: {
+            recordType: 'invoice',
+            label: 'Sales Invoice'
+        },
+
+        VENDOR_BILL: {
+            recordType: 'vendorbill',
+            label: 'Vendor Bill'
+        },
+
+        EXPENSE_CATEGORY: {
+            recordType: 'expensecategory',
+            label: 'Expense Category'
+        },
+
+        LOCATION: {
+            recordType: 'location',
+            label: 'Location'
+        },
+
+        SUBSIDIARY: {
+            recordType: 'subsidiary',
+            label: 'Subsidiary'
         }
     };
 
     // ========================================
-    // CONFIGURATION
+    // LLM CONFIGURATION
     // ========================================
-    
-    const CONFIG = {
-        tds: {
-            createUrl: 'https://td2913181.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1042',
-            editUrlBase: 'https://td2913181.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1042&id=',
-            recordType: 'customrecord_agtax_tdsmaster'
-        },
-        agtax: {
-            createUrl: 'https://td2913181.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1028',
-            editUrlBase: 'https://td2913181.app.netsuite.com/app/common/custom/custrecordentry.nl?rectype=1028&id=',
-            recordType: 'customrecord_agtax_code_matrix'
-        }
+
+    const LLM_CONFIG = {
+        model: 'oracle/cohere-command-r-16k',
+        maxTokens: 300,
+        temperature: 0.3,
+        maxSearchResults: 7
     };
 
     // ========================================
     // KNOWLEDGE BASE FUNCTIONS
     // ========================================
-    
+
     /**
      * Load articles index from File Cabinet
      * Uses cache to avoid repeated file loads
      */
     function loadArticlesIndex() {
         if (!KNOWLEDGE_BASE.enabled) return null;
-        
+
         try {
             // Try to get from cache first
             const knowledgeCache = cache.getCache({
                 name: 'AGTAX_KNOWLEDGE_BASE',
                 scope: cache.Scope.PRIVATE
             });
-            
+
             const cachedIndex = knowledgeCache.get({ key: 'articles_index' });
             if (cachedIndex) {
                 log.debug('Knowledge Base', 'Loaded from cache');
                 return JSON.parse(cachedIndex);
             }
-            
+
             // Load from file if not in cache
+            log.debug('Loading Index', 'File ID: ' + KNOWLEDGE_BASE.INDEX_FILE_ID);
             const indexFile = file.load({ id: KNOWLEDGE_BASE.INDEX_FILE_ID });
             const indexContent = indexFile.getContents();
             const articlesIndex = JSON.parse(indexContent);
-            
+
             // Store in cache
             knowledgeCache.put({
                 key: 'articles_index',
                 value: indexContent,
                 ttl: KNOWLEDGE_BASE.cache_ttl
             });
-            
-            log.debug('Knowledge Base', 'Loaded ' + articlesIndex.length + ' articles from file');
+
+            log.audit('Articles Index Loaded', articlesIndex.length + ' articles');
             return articlesIndex;
-            
+
         } catch (e) {
-            log.error('Knowledge Base Load Error', e.toString());
+            log.error('Failed to Load Articles Index', e.toString());
             return null;
         }
     }
 
     /**
-     * Load a specific article content by Internal ID
+     * Load full article content from File Cabinet
      */
-    function loadArticleContent(internalId) {
+    function loadArticleContent(fileId) {
         try {
-            const articleFile = file.load({ id: internalId });
-            return articleFile.getContents();
+            log.debug('Loading Article', 'File ID: ' + fileId);
+            const articleFile = file.load({ id: fileId });
+            const content = articleFile.getContents();
+            return content;
         } catch (e) {
-            log.error('Article Load Error', 'ID: ' + internalId + ', Error: ' + e.toString());
-            return null;
+            log.error('Failed to Load Article', 'File ID: ' + fileId + ', Error: ' + e.toString());
+            return 'Error loading article content. Please contact support.';
         }
     }
 
     /**
-     * Use LLM to rank articles by relevance to user query
+     * Process article content and replace placeholders with dynamic URLs
+     * Placeholders: [CREATE:RESOURCE], [LIST:RESOURCE], [EDIT:RESOURCE:ID], [VIEW:RESOURCE]
      */
-    function rankArticlesByRelevance(userQuery, articlesIndex) {
+    function processArticlePlaceholders(articleContent) {
+        if (!articleContent) return '';
+
+        let processedContent = articleContent;
+
+        // Regular expression to find placeholders
+        const placeholderRegex = /\[(CREATE|LIST|EDIT|VIEW):([A-Z_]+)(?::([^\]]+))?\]/g;
+
+        processedContent = processedContent.replace(placeholderRegex,
+            function(match, action, resource, param) {
+                try {
+                    const mapping = URL_MAPPINGS[resource];
+
+                    if (!mapping) {
+                        log.warning({
+                            title: 'Placeholder Not Found',
+                            details: 'Resource: ' + resource + ' in: ' + match
+                        });
+                        return '<span class="error-placeholder" title="Not configured: ' + resource + '">[' + resource + ']</span>';
+                    }
+
+                    let generatedUrl = '';
+                    let linkText = '';
+                    let linkClass = '';
+
+                    switch(action) {
+                        case 'CREATE':
+                            if (mapping.createUrl) {
+                                generatedUrl = mapping.createUrl;
+                            } else {
+                                // Use URL resolver for standard records
+                                try {
+                                    generatedUrl = url.resolveRecord({
+                                        recordType: mapping.recordType,
+                                        isEdit: false
+                                    });
+                                } catch (e) {
+                                    log.error('URL Resolve Error', 'CREATE ' + resource + ': ' + e);
+                                    generatedUrl = '#';
+                                }
+                            }
+                            linkText = 'Create ' + mapping.label;
+                            linkClass = 'create-button';
+                            return '<a href="' + generatedUrl + '" target="_blank" class="' + linkClass + '">' + linkText + '</a>';
+
+                        case 'LIST':
+                        case 'VIEW':
+                            if (mapping.listUrl) {
+                                generatedUrl = mapping.listUrl;
+                            } else {
+                                // Try to build list URL for standard records
+                                try {
+                                    if (mapping.recordType === 'customer') {
+                                        generatedUrl = '/app/common/entity/custjob.nl?e=T';
+                                    } else if (mapping.recordType === 'vendor') {
+                                        generatedUrl = '/app/common/entity/vendorlist.nl';
+                                    } else if (mapping.recordType === 'invoice') {
+                                        generatedUrl = '/app/accounting/transactions/transactionlist.nl?Transaction_TYPE=CustInvc';
+                                    } else if (mapping.recordType === 'vendorbill') {
+                                        generatedUrl = '/app/accounting/transactions/transactionlist.nl?Transaction_TYPE=VendBill';
+                                    } else {
+                                        generatedUrl = '/app/common/search/searchresults.nl?searchtype=' + mapping.recordType;
+                                    }
+                                } catch (e) {
+                                    log.error('URL Resolve Error', 'LIST ' + resource + ': ' + e);
+                                    generatedUrl = '#';
+                                }
+                            }
+                            linkText = 'View All ' + mapping.label + ' Records';
+                            linkClass = 'list-link';
+                            return '<a href="' + generatedUrl + '" target="_blank" class="' + linkClass + '">' + linkText + '</a>';
+
+                        case 'EDIT':
+                            if (!param) {
+                                return '<span class="error-placeholder">[EDIT requires ID]</span>';
+                            }
+                            try {
+                                generatedUrl = url.resolveRecord({
+                                    recordType: mapping.recordType,
+                                    recordId: param,
+                                    isEdit: true
+                                });
+                            } catch (e) {
+                                log.error('URL Resolve Error', 'EDIT ' + resource + ': ' + e);
+                                generatedUrl = '#';
+                            }
+                            linkText = 'Edit ' + mapping.label;
+                            linkClass = 'edit-link';
+                            return '<a href="' + generatedUrl + '" target="_blank" class="' + linkClass + '">' + linkText + '</a>';
+
+                        default:
+                            return match;
+                    }
+
+                } catch (e) {
+                    log.error('Placeholder Processing Error', e.toString());
+                    return '<span class="error-placeholder">[Error: ' + match + ']</span>';
+                }
+            }
+        );
+
+        return processedContent;
+    }
+
+    /**
+     * Detect if query is a question or search term
+     */
+    function detectIntent(query) {
+        const questionWords = ['what', 'how', 'when', 'where', 'why', 'who', 'which', 'can', 'should', 'is', 'are', 'do', 'does'];
+        const lowerQuery = query.toLowerCase().trim();
+
+        if (lowerQuery.includes('?')) {
+            return { isQuestion: true, intent: 'question' };
+        }
+
+        const firstWord = lowerQuery.split(' ')[0];
+        if (questionWords.includes(firstWord)) {
+            return { isQuestion: true, intent: 'question' };
+        }
+
+        if (lowerQuery.split(' ').length > 5) {
+            return { isQuestion: true, intent: 'question' };
+        }
+
+        return { isQuestion: false, intent: 'search' };
+    }
+
+    /**
+     * Rank articles using LLM
+     */
+    function rankArticles(query, articles) {
         try {
-            // Create a simplified version for LLM (title, summary, keywords only)
-            const simplifiedArticles = articlesIndex.map(article => ({
-                id: article.id,
-                internal_id: article.internal_id,
-                title: article.title,
-                summary: article.summary,
-                keywords: article.keywords.join(', '),
-                category: article.category
-            }));
-            
-            const rankingPrompt = 
-                'You are a search ranking expert for AGTAX documentation.\n\n' +
-                'User Query: "' + userQuery + '"\n\n' +
-                'Available Articles:\n' +
-                JSON.stringify(simplifiedArticles, null, 2) + '\n\n' +
-                'Task: Rank these articles by relevance to the user query.\n\n' +
-                'Respond with ONLY valid JSON array of article IDs in order from most to least relevant.\n' +
-                'Include only the top 7 most relevant articles.\n' +
-                'Format: ["01", "05", "16", "13", "09", "22", "25"]\n\n' +
-                'Consider:\n' +
-                '- Keyword matches\n' +
-                '- Title relevance\n' +
-                '- Summary content\n' +
-                '- Category relevance\n\n' +
-                'Return ONLY the JSON array, no other text.';
-            
-            const result = llm.generateText({
-                prompt: rankingPrompt,
-                modelParameters: { maxTokens: 200, temperature: 0.3 }
+            // Build prompt
+            let articlesText = 'Available articles:\n\n';
+            articles.forEach((article, index) => {
+                articlesText += (index + 1) + '. ' + article.title + '\n';
+                articlesText += '   Summary: ' + article.summary + '\n';
+                articlesText += '   Keywords: ' + article.keywords.join(', ') + '\n\n';
             });
-            
-            // Parse LLM response
-            let jsonText = result.text.trim()
-                .replace(/```json\n?/g, '').replace(/```\n?/g, '')
-                .replace(/^[^\[]*(\[.*\])[^\]]*$/s, '$1');
-            
-            const rankedIds = JSON.parse(jsonText);
-            
-            // Map IDs back to full article objects
+
+            const prompt = `You are a search ranking system for AGSuite NetSuite documentation.
+
+User Query: "${query}"
+
+${articlesText}
+
+Rank the articles by relevance to the user's query. Return ONLY the article numbers in order of relevance (most relevant first), separated by commas.
+
+Only include articles that are actually relevant to the query. If no articles are relevant, return "NONE".
+
+Your ranking:`;
+
+            log.debug('LLM Prompt', 'Query: ' + query);
+
+            // Call LLM
+            const response = llm.evaluatePrompt({
+                model: LLM_CONFIG.model,
+                maxTokens: 100,
+                temperature: 0.1,
+                prompt: prompt
+            });
+
+            const rankingText = response.choices[0].message.content.trim();
+            log.debug('LLM Ranking', rankingText);
+
+            if (rankingText === 'NONE' || !rankingText) {
+                return [];
+            }
+
+            // Parse rankings
+            const rankings = rankingText.split(',')
+                .map(num => parseInt(num.trim()))
+                .filter(num => !isNaN(num));
+
+            // Build ranked results
             const rankedArticles = [];
-            rankedIds.forEach(id => {
-                const article = articlesIndex.find(a => a.id === id);
-                if (article) rankedArticles.push(article);
+            rankings.forEach(rank => {
+                if (rank > 0 && rank <= articles.length) {
+                    rankedArticles.push(articles[rank - 1]);
+                }
             });
-            
-            log.debug('Article Ranking', 'Query: ' + userQuery + ', Found: ' + rankedArticles.length + ' articles');
-            return rankedArticles;
-            
+
+            return rankedArticles.slice(0, LLM_CONFIG.maxSearchResults);
+
         } catch (e) {
-            log.error('Article Ranking Error', e.toString());
-            // Fallback: simple keyword matching
-            return simpleKeywordSearch(userQuery, articlesIndex);
+            log.error('LLM Ranking Failed', e.toString());
+            // Fallback to keyword search
+            return simpleKeywordSearch(query, articles);
         }
     }
 
     /**
-     * Fallback: Simple keyword-based search
+     * Fallback keyword search
      */
-    function simpleKeywordSearch(query, articlesIndex) {
-        const queryLower = query.toLowerCase();
-        const queryWords = queryLower.split(/\s+/);
-        
-        const scored = articlesIndex.map(article => {
+    function simpleKeywordSearch(query, articles) {
+        const queryWords = query.toLowerCase().split(' ');
+
+        const scored = articles.map(article => {
             let score = 0;
             const titleLower = article.title.toLowerCase();
             const summaryLower = article.summary.toLowerCase();
-            const keywordsLower = article.keywords.join(' ').toLowerCase();
-            
-            // Score based on matches
+            const keywordsLower = article.keywords.map(k => k.toLowerCase());
+
             queryWords.forEach(word => {
-                if (titleLower.includes(word)) score += 10;
-                if (keywordsLower.includes(word)) score += 5;
+                if (titleLower.includes(word)) score += 3;
                 if (summaryLower.includes(word)) score += 2;
+                if (keywordsLower.some(k => k.includes(word))) score += 1;
             });
-            
-            return { article: article, score: score };
+
+            return { article, score };
         });
-        
-        // Sort by score and return top 7
-        scored.sort((a, b) => b.score - a.score);
-        return scored.filter(s => s.score > 0).slice(0, 7).map(s => s.article);
+
+        return scored
+            .filter(item => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, LLM_CONFIG.maxSearchResults)
+            .map(item => item.article);
     }
 
     /**
-     * Detect if user input is a search query or question
+     * Format search results as HTML
      */
-    function detectQueryType(userInput) {
-        try {
-            const detectionPrompt = 
-                'Analyze this user input and determine if they want to SEARCH documentation or ASK a question.\n\n' +
-                'User Input: "' + userInput + '"\n\n' +
-                'Rules:\n' +
-                '- SEARCH: Keywords, topics, "show me", "find", "about", "how to setup", navigation requests\n' +
-                '- QUESTION: "What is", "How does", "Why", "Can you explain", direct questions\n\n' +
-                'Respond with ONLY valid JSON:\n' +
-                '{"type": "search" or "question", "confidence": 0.0 to 1.0}\n\n' +
-                'Examples:\n' +
-                '"TDS payment" -> {"type": "search", "confidence": 0.9}\n' +
-                '"What is TDS?" -> {"type": "question", "confidence": 0.95}\n' +
-                '"How to create invoice" -> {"type": "search", "confidence": 0.85}\n\n' +
-                'Return ONLY the JSON, no other text.';
-            
-            const result = llm.generateText({
-                prompt: detectionPrompt,
-                modelParameters: { maxTokens: 100, temperature: 0.2 }
-            });
-            
-            let jsonText = result.text.trim()
-                .replace(/```json\n?/g, '').replace(/```\n?/g, '')
-                .replace(/^[^{]*({.*})[^}]*$/s, '$1');
-            
-            const detection = JSON.parse(jsonText);
-            return detection;
-            
-        } catch (e) {
-            log.error('Query Type Detection Error', e.toString());
-            // Default to question for safety
-            return { type: 'question', confidence: 0.5 };
-        }
-    }
-
-    /**
-     * Format search results for display
-     */
-    function formatArticleResults(articles) {
+    function formatSearchResults(articles, query) {
         if (!articles || articles.length === 0) {
-            return '<div class="info-box">' +
-                   'No articles found for your query. Try different keywords or ask a question instead.' +
+            return '<div class="no-results">' +
+                   '<p>No articles found for: <strong>' + escapeHtml(query) + '</strong></p>' +
+                   '<p class="hint">Try different keywords or ask a question.</p>' +
                    '</div>';
         }
-        
-        let html = '<div class="info-box">';
-        html += 'Found ' + articles.length + ' relevant article' + (articles.length > 1 ? 's' : '') + ':';
-        html += '</div><br>';
-        
-        articles.forEach((article, idx) => {
-            html += '<div class="article-result" onclick="viewArticle(\'' + article.internal_id + '\', \'' + article.id + '\')">';
-            html += '<div class="article-number">' + (idx + 1) + '</div>';
-            html += '<div class="article-content">';
-            html += '<div class="article-title">' + article.title + '</div>';
-            html += '<div class="article-summary">' + article.summary.substring(0, 150) + '...</div>';
-            html += '<div class="article-meta">';
-            html += '<span class="category-badge">' + article.category + '</span>';
-            html += '<span class="view-link">Click to view full article →</span>';
+
+        let html = '<div class="search-results">';
+        html += '<div class="results-header">';
+        html += '<p>Found ' + articles.length + ' relevant article' + (articles.length > 1 ? 's' : '') + ' for: <strong>' + escapeHtml(query) + '</strong></p>';
+        html += '</div>';
+
+        articles.forEach((article, index) => {
+            // Use file_id if available, otherwise use id as fallback
+            const fileId = article.file_id || article.id;
+
+            html += '<div class="result-item" onclick="loadArticle(\'' + fileId + '\', \'' + escapeHtml(article.title) + '\')">';
+            html += '<div class="result-number">' + (index + 1) + '</div>';
+            html += '<div class="result-content">';
+            html += '<h3 class="result-title">' + article.title + '</h3>';
+            html += '<p class="result-summary">' + article.summary + '</p>';
+            html += '<div class="result-keywords">';
+            article.keywords.slice(0, 5).forEach(keyword => {
+                html += '<span class="keyword-tag">' + keyword + '</span>';
+            });
             html += '</div>';
             html += '</div>';
+            html += '<div class="result-arrow">→</div>';
             html += '</div>';
         });
-        
+
+        html += '</div>';
         return html;
     }
 
     /**
-     * Format full article content for display
+     * Format article content with dynamic URLs
      */
     function formatArticleContent(articleContent, articleTitle) {
+        // CRITICAL: Process placeholders FIRST
+        const processedContent = processArticlePlaceholders(articleContent);
+
         let html = '<div class="article-view">';
         html += '<div class="article-header">';
         html += '<button class="back-button" onclick="goBackToSearch()">← Back to Search Results</button>';
         html += '<h2>' + articleTitle + '</h2>';
         html += '</div>';
         html += '<div class="article-body">';
-        
-        // Convert article content to HTML (simple formatting)
-        const lines = articleContent.split('\n');
+
+        // Convert text to HTML
+        const lines = processedContent.split('\n');
+        let inList = false;
+        let listType = null;
+
         lines.forEach(line => {
             line = line.trim();
+
             if (line === '') {
+                if (inList) {
+                    html += '</' + listType + '>';
+                    inList = false;
+                    listType = null;
+                }
                 html += '<br>';
-            } else if (line.toUpperCase() === line && line.length > 10 && !line.includes(':')) {
+            } else if (line.toUpperCase() === line && line.length > 10 && !line.includes(':') && !line.includes('<')) {
                 // All caps = heading
+                if (inList) {
+                    html += '</' + listType + '>';
+                    inList = false;
+                    listType = null;
+                }
                 html += '<h3>' + line + '</h3>';
             } else if (line.match(/^[-•]\s/)) {
                 // Bullet point
+                if (!inList || listType !== 'ul') {
+                    if (inList) html += '</' + listType + '>';
+                    html += '<ul>';
+                    inList = true;
+                    listType = 'ul';
+                }
                 html += '<li>' + line.substring(2) + '</li>';
             } else if (line.match(/^\d+\.\s/)) {
                 // Numbered list
-                html += '<li>' + line.substring(line.indexOf('.') + 2) + '</li>';
+                if (!inList || listType !== 'ol') {
+                    if (inList) html += '</' + listType + '>';
+                    html += '<ol>';
+                    inList = true;
+                    listType = 'ol';
+                }
+                const dotIndex = line.indexOf('.');
+                html += '<li>' + line.substring(dotIndex + 2) + '</li>';
             } else {
+                if (inList) {
+                    html += '</' + listType + '>';
+                    inList = false;
+                    listType = null;
+                }
                 html += '<p>' + line + '</p>';
             }
         });
-        
+
+        if (inList) {
+            html += '</' + listType + '>';
+        }
+
         html += '</div>';
         html += '<div class="article-footer">';
         html += '<button class="back-button" onclick="goBackToSearch()">← Back to Search Results</button>';
         html += '</div>';
         html += '</div>';
-        
+
         return html;
     }
 
-    // ========================================
-    // STATE MANAGEMENT
-    // ========================================
-    
-    function getConversationState(userId) {
-        try {
-            const conversationCache = cache.getCache({
-                name: 'NETSUITE_ASSISTANT',
-                scope: cache.Scope.PRIVATE
-            });
-            const stateJson = conversationCache.get({ key: 'user_' + userId });
-            if (stateJson) return JSON.parse(stateJson);
-        } catch (e) {
-            log.debug('Cache Read', 'No state found');
-        }
-        return {
-            stage: 'GREETING',
-            currentModule: null,
-            currentAction: null,
-            conversationHistory: [],
-            context: {},
-            lastSearchResults: null // Store search results for navigation
-        };
-    }
-
-    function saveConversationState(userId, state) {
-        try {
-            const conversationCache = cache.getCache({
-                name: 'NETSUITE_ASSISTANT',
-                scope: cache.Scope.PRIVATE
-            });
-            conversationCache.put({
-                key: 'user_' + userId,
-                value: JSON.stringify(state),
-                ttl: 3600
-            });
-        } catch (e) {
-            log.error('Cache Write Error', e);
-        }
-    }
-
-    function addToHistory(state, role, message) {
-        state.conversationHistory.push({
-            role: role,
-            message: message,
-            timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-        });
-        if (state.conversationHistory.length > 30) {
-            state.conversationHistory = state.conversationHistory.slice(-30);
-        }
-    }
-
-    function getCurrentUserInfo() {
-        try {
-            const user = runtime.getCurrentUser();
-            return {
-                id: user.id,
-                name: user.name,
-                firstName: user.name.split(' ')[0],
-                isLoggedIn: user.role !== -4
-            };
-        } catch (e) {
-            return { isLoggedIn: false, id: 'guest', firstName: 'Guest' };
-        }
-    }
-
-    // ========================================
-    // AI INTELLIGENCE ENGINE (Enhanced)
-    // ========================================
-    
-    function classifyIntent(userInput) {
-        try {
-            // Question detection - highest priority
-            const questionPatterns = [
-                /^(what|how|why|when|where|who|can you|tell me|explain|describe)/i,
-                /(what is|what are|how do|how does|tell me about)/i
-            ];
-            
-            const isExplicitQuestion = questionPatterns.some(pattern => pattern.test(userInput.trim()));
-            
-            if (isExplicitQuestion) {
-                log.debug('Intent', 'Explicit question detected');
-                return { module: 'general', action: 'question', confidence: 0.95 };
-            }
-
-            const moduleList = Object.values(MODULES)
-                .filter(m => m.enabled)
-                .map(m => m.id + ' (' + m.keywords.join(', ') + ')')
-                .join(', ');
-
-            const classificationPrompt = 
-                'Classify this NetSuite request:\n\n' +
-                'User input: "' + userInput + '"\n\n' +
-                'Available modules: ' + moduleList + '\n\n' +
-                'Respond with ONLY valid JSON:\n' +
-                '{"module": "tds" or "agtax" or "general", "action": "create" or "search" or "question", "confidence": 0.0 to 1.0}\n\n' +
-                'Rules:\n' +
-                '- If wants to create/add/new then action: "create"\n' +
-                '- If wants to find/search/show/list then action: "search"\n' +
-                '- Match keywords to modules\n' +
-                '- If unsure then module: "general", action: "question"\n\n' +
-                'Respond with ONLY the JSON, no other text.';
-
-            const result = llm.generateText({
-                prompt: classificationPrompt,
-                modelParameters: { maxTokens: 150, temperature: 0.1 }
-            });
-
-            let jsonText = result.text.trim()
-                .replace(/```json\n?/g, '').replace(/```\n?/g, '')
-                .replace(/^[^{]*({.*})[^}]*$/s, '$1');
-            
-            const intent = JSON.parse(jsonText);
-            
-            log.debug('Intent Classified', JSON.stringify(intent));
-            
-            return {
-                module: intent.module || 'general',
-                action: intent.action || 'question',
-                confidence: intent.confidence || 0.5
-            };
-        } catch (e) {
-            log.error('Intent Classification Error', e);
-            return { module: 'general', action: 'question', confidence: 0.0 };
-        }
-    }
-
-    function generateAIResponse(userInput, context) {
-        try {
-            const systemPrompt = 
-                'You are AGSuite Tech Assistant, a helpful NetSuite assistant for AGTAX taxation functionality. Answer questions clearly and concisely.\n\n' +
-                'Topics you can help with:\n' +
-                '- TDS sections: 194J (professional fees), 194C (contracts), 194H (commission), etc.\n' +
-                '- GST/AG Tax: IGST for inter-state, SGST plus CGST for intra-state\n' +
-                '- Sales Orders, Purchase Orders, Invoices\n' +
-                '- NetSuite records and navigation\n' +
-                '- AGTAX documentation and setup guides\n\n' +
-                'Keep answers under 60 words and be helpful. If the question is about AGTAX setup or processes, suggest they can search the documentation.';
-
-            const result = llm.generateText({
-                prompt: systemPrompt + '\n\nUser question: ' + userInput,
-                modelParameters: { maxTokens: 200, temperature: 0.7 }
-            });
-
-            let response = result.text.trim();
-            
-            // Basic cleanup
-            if (response.length > 400) {
-                response = response.substring(0, 400) + '...';
-            }
-            
-            return response;
-        } catch (e) {
-            log.error('AI Response Error', e.toString());
-            
-            // Smart fallback based on question keywords
-            const input = userInput.toLowerCase();
-            
-            if (input.includes('sales order') || input.includes('so')) {
-                return 'Sales Orders in NetSuite track customer purchases. You can create them from customers or opportunities, add items, and convert to invoices once fulfilled.';
-            } else if (input.includes('gst') || input.includes('tax code')) {
-                return 'GST tax codes in NetSuite: IGST applies for inter-state transactions, while SGST plus CGST applies for intra-state. Rate depends on product/service category.';
-            } else if (input.includes('194')) {
-                return 'TDS Section 194J covers professional or technical fees. Rate is typically 10 percent. Used for payments to consultants, professionals, and technical service providers.';
-            } else {
-                return 'I can help with TDS sections, GST tax codes, and NetSuite records. You can also search the AGTAX documentation for detailed guides.';
-            }
-        }
-    }
-
-    // ========================================
-    // SMART BUTTON GENERATION
-    // ========================================
-    
-    function generateSmartButtons(stage, module, userInfo) {
-        let buttons = [];
-
-        if (stage === 'GREETING' || stage === 'MAIN_MENU') {
-            Object.values(MODULES).filter(m => m.enabled).forEach(m => {
-                buttons.push({
-                    label: m.name,
-                    value: 'module:' + m.id,
-                    description: m.description
-                });
-            });
-            
-            buttons.push({
-                label: 'Ask a Question',
-                value: 'action:question',
-                description: 'Get help or information'
-            });
-        }
-        else if (stage === 'MODULE_SELECTED' && module) {
-            const moduleConfig = MODULES[module];
-            if (moduleConfig) {
-                buttons.push({
-                    label: 'Create New',
-                    value: 'action:create',
-                    description: 'Create new ' + moduleConfig.name
-                });
-                buttons.push({
-                    label: 'View All',
-                    value: 'action:viewall',
-                    description: 'View all records'
-                });
-                
-                buttons.push({
-                    label: 'Back to Menu',
-                    value: 'navigation:menu',
-                    description: 'Return to main menu'
-                });
-            }
-        }
-        else if (stage === 'SEARCH_INPUT') {
-            buttons.push({
-                label: 'Show All',
-                value: 'search:all',
-                description: 'Display all active records'
-            });
-            buttons.push({
-                label: 'Back',
-                value: 'navigation:back',
-                description: 'Go back'
-            });
-        }
-
-        return buttons;
-    }
-
-    function renderButtons(buttons) {
-        if (!buttons || buttons.length === 0) return '';
-        
-        let html = '<div class="button-group">';
-        buttons.forEach(btn => {
-            html += '<button class="option-button" onclick="selectOption(\'' + btn.value + '\')" title="' + (btn.description || '') + '">';
-            html += btn.label;
-            html += '</button>';
-        });
-        html += '</div>';
-        return html;
-    }
-
-    // ========================================
-    // GREETING GENERATOR
-    // ========================================
-    
-    function generateGreeting(userInfo) {
-        const greeting = userInfo.isLoggedIn ?
-            'Hi ' + userInfo.firstName + ', I am your AGSuite Tech Assistant!' :
-            'Hi there! I am your AGSuite Tech Assistant.';
-        
-        const enabledModules = Object.values(MODULES).filter(m => m.enabled);
-        
-        let message = greeting + ' I can help you with:<br><br>';
-        
-        enabledModules.forEach(m => {
-            message += '<strong>' + m.name + ':</strong> ' + m.description + '<br>';
-        });
-        
-        message += '<br>You can either:<br>';
-        message += '- Type naturally what you need<br>';
-        message += '- Use the buttons below for guided navigation<br><br>';
-        message += 'What would you like to do?';
-        
-        const buttons = generateSmartButtons('GREETING', null, userInfo);
-        message += '<br>' + renderButtons(buttons);
-        
-        return message;
-    }
-
-    // ========================================
-    // MODULE HANDLERS (TDS & AG TAX - UNCHANGED)
-    // ========================================
-    
-    const TDSHandler = {
-        search: function(criteria) {
-            try {
-                const filters = [];
-                
-                if (criteria.name) filters.push(['name', 'contains', criteria.name]);
-                if (criteria.section) {
-                    if (filters.length > 0) filters.push('AND');
-                    filters.push(['custrecord_master_section', 'anyof', criteria.section]);
-                }
-                if (criteria.id) {
-                    if (filters.length > 0) filters.push('AND');
-                    filters.push(['internalid', 'anyof', criteria.id]);
-                }
-                if (filters.length === 0) filters.push(['isinactive', 'is', 'F']);
-
-                const tdsSearch = search.create({
-                    type: CONFIG.tds.recordType,
-                    filters: filters,
-                    columns: ['internalid', 'name', 'custrecord_master_section', 'custrecord_tds_master_rate']
-                });
-
-                const results = tdsSearch.run().getRange({start: 0, end: 50});
-                
-                if (results.length > 0) {
-                    return results.map(result => ({
-                        id: result.getValue('internalid'),
-                        name: result.getValue('name'),
-                        section: result.getText('custrecord_master_section'),
-                        rate: result.getValue('custrecord_tds_master_rate')
-                    }));
-                }
-                return null;
-            } catch (e) {
-                log.error('TDS Search Error', e);
-                return null;
-            }
-        },
-        
-        extractCriteria: function(input) {
-            const criteria = {};
-            if (input.toLowerCase().includes('show all') || input.toLowerCase() === 'all') return {};
-            
-            const idMatch = input.match(/\b(id|#)\s*(\d+)/i);
-            if (idMatch) criteria.id = idMatch[2];
-            
-            const sectionMatch = input.match(/194[a-z]{0,2}/i);
-            if (sectionMatch) criteria.section = sectionMatch[0].toUpperCase();
-            
-            if (!criteria.id && !criteria.section && input.length > 2) {
-                criteria.name = input;
-            }
-            
-            return criteria;
-        }
-    };
-
-    const AGTaxHandler = {
-        search: function(criteria) {
-            try {
-                const filters = [];
-                
-                if (criteria.name) filters.push(['name', 'contains', criteria.name]);
-                if (criteria.gstType) {
-                    if (filters.length > 0) filters.push('AND');
-                    filters.push(['custrecord_agtax_gst_type', 'anyof', criteria.gstType]);
-                }
-                if (criteria.id) {
-                    if (filters.length > 0) filters.push('AND');
-                    filters.push(['internalid', 'anyof', criteria.id]);
-                }
-                if (filters.length === 0) filters.push(['isinactive', 'is', 'F']);
-
-                const agTaxSearch = search.create({
-                    type: CONFIG.agtax.recordType,
-                    filters: filters,
-                    columns: ['internalid', 'custrecord_agtax_gst_type', 'custrecord_agtax_sac_hsn_taxrate']
-                });
-
-                const results = agTaxSearch.run().getRange({start: 0, end: 50});
-                
-                if (results.length > 0) {
-                    return results.map(result => ({
-                        id: result.getValue('internalid'),
-                        gstType: result.getText('custrecord_agtax_gst_type'),
-                        taxRate: result.getValue('custrecord_agtax_sac_hsn_taxrate')
-                    }));
-                }
-                return null;
-            } catch (e) {
-                log.error('AG Tax Search Error', e);
-                return null;
-            }
-        },
-        
-        extractCriteria: function(input) {
-            const criteria = {};
-            if (input.toLowerCase().includes('show all') || input.toLowerCase() === 'all') return {};
-            
-            const idMatch = input.match(/\b(id|#)\s*(\d+)/i);
-            if (idMatch) criteria.id = idMatch[2];
-            
-            if (input.toLowerCase().includes('igst')) criteria.gstType = 'IGST';
-            else if (input.toLowerCase().includes('inter')) criteria.gstType = 'Inter-State';
-            else if (input.toLowerCase().includes('intra')) criteria.gstType = 'Intra-State';
-            
-            if (!criteria.id && !criteria.gstType && input.length > 2) {
-                criteria.name = input;
-            }
-            
-            return criteria;
-        }
-    };
-
-    const MODULE_HANDLERS = {
-        tds: TDSHandler,
-        agtax: AGTaxHandler
-    };
-
-    // ========================================
-    // RESULT FORMATTING
-    // ========================================
-    
-    function formatSearchResults(results, module) {
-        if (!results || results.length === 0) {
-            return '<div class="warning-box">' +
-                   '<strong>No records found</strong><br>' +
-                   'Try different search terms or click Show All to see all active records.' +
-                   '</div>';
-        }
-        
-        const moduleConfig = MODULES[module];
-        const config = CONFIG[module];
-        
-        let html = '<div class="info-box">';
-        html += results.length === 1 ? 
-                'Found your record:' : 
-                'Found ' + results.length + ' records' + (results.length > 5 ? ' (showing first 5):' : ':');
-        html += '</div><br>';
-        
-        results.slice(0, 5).forEach((record, idx) => {
-            html += '<div class="result-item">';
-            html += '<strong>' + (idx + 1) + '.</strong> ';
-            html += '<span class="item-name">' + (record.name || 'ID: ' + record.id) + '</span>';
-            
-            if (record.section) html += ' <span class="badge">' + record.section + '</span>';
-            if (record.gstType) html += ' <span class="badge">' + record.gstType + '</span>';
-            if (record.rate) html += ' <span class="rate-badge">' + record.rate + '%</span>';
-            if (record.taxRate) html += ' <span class="rate-badge">' + record.taxRate + '%</span>';
-            
-            html += ' <a href="' + config.editUrlBase + record.id + '" target="_blank" class="inline-link">View/Edit</a>';
-            html += '</div>';
-        });
-        
-        return html;
-    }
-
-    // ========================================
-    // MAIN CONVERSATION PROCESSOR (ENHANCED)
-    // ========================================
-    
-    function processConversation(userInput, state, userInfo) {
-        addToHistory(state, 'user', userInput);
-        
-        // Handle article view request
-        if (userInput.startsWith('article:view:')) {
-            const parts = userInput.split(':');
-            const internalId = parts[2];
-            const articleId = parts[3];
-            
-            const articlesIndex = loadArticlesIndex();
-            const article = articlesIndex ? articlesIndex.find(a => a.id === articleId) : null;
-            
-            if (article) {
-                const articleContent = loadArticleContent(internalId);
-                if (articleContent) {
-                    const response = formatArticleContent(articleContent, article.title);
-                    addToHistory(state, 'assistant', response);
-                    return { message: response, state: state };
-                }
-            }
-            
-            const response = '<div class="warning-box">Unable to load article content. Please try again.</div>';
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle back to search
-        if (userInput === 'navigation:backtosearch' && state.lastSearchResults) {
-            const response = formatArticleResults(state.lastSearchResults);
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle button clicks
-        if (userInput.startsWith('module:')) {
-            const moduleId = userInput.split(':')[1];
-            state.currentModule = moduleId;
-            state.stage = 'MODULE_SELECTED';
-            
-            const moduleConfig = MODULES[moduleId];
-            const response = '<strong>' + moduleConfig.name + '</strong><br><br>' +
-                           moduleConfig.description + '<br><br>' +
-                           'What would you like to do?<br>' +
-                           renderButtons(generateSmartButtons('MODULE_SELECTED', moduleId, userInfo));
-            
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        if (userInput.startsWith('action:')) {
-            const action = userInput.split(':')[1];
-            
-            if (action === 'question') {
-                const response = 'Sure! What would you like to know?<br><br>' +
-                               '<small>You can ask about TDS sections, GST types, tax rates, or search the AGTAX documentation.</small>';
-                state.stage = 'QUESTION_MODE';
-                addToHistory(state, 'assistant', response);
-                return { message: response, state: state };
-            }
-            
-            if (action === 'create') {
-                if (!userInfo.isLoggedIn) {
-                    return { 
-                        message: '<div class="warning-box">Please log in to NetSuite to create records.</div>', 
-                        state: state 
-                    };
-                }
-                
-                const config = CONFIG[state.currentModule];
-                const moduleConfig = MODULES[state.currentModule];
-                const response = '<strong>Create New ' + moduleConfig.name + '</strong><br><br>' +
-                               '<a href="' + config.createUrl + '" target="_blank" class="primary-button">Open Creation Form</a><br><br>' +
-                               '<div class="tip-box">After creating, come back here to search for it!</div>';
-                
-                addToHistory(state, 'assistant', response);
-                return { message: response, state: state };
-            }
-            
-            if (action === 'viewall') {
-                const module = state.currentModule;
-                if (!module || !MODULE_HANDLERS[module]) {
-                    const response = '<div class="warning-box">Please select a module first.</div>';
-                    addToHistory(state, 'assistant', response);
-                    return { message: response, state: state };
-                }
-                
-                const handler = MODULE_HANDLERS[module];
-                const results = handler.search({});
-                const response = formatSearchResults(results, module);
-                
-                addToHistory(state, 'assistant', response);
-                return { message: response, state: state };
-            }
-        }
-        
-        if (userInput.startsWith('navigation:')) {
-            const nav = userInput.split(':')[1];
-            if (nav === 'menu' || nav === 'back') {
-                state.stage = 'GREETING';
-                state.currentModule = null;
-                state.currentAction = null;
-                state.lastSearchResults = null;
-                const response = generateGreeting(userInfo);
-                addToHistory(state, 'assistant', response);
-                return { message: response, state: state };
-            }
-        }
-        
-        if (userInput.startsWith('search:all')) {
-            const module = state.currentModule;
-            
-            if (!module || !MODULE_HANDLERS[module]) {
-                const response = '<div class="warning-box">Please select a module first.</div>';
-                addToHistory(state, 'assistant', response);
-                return { message: response, state: state };
-            }
-            
-            log.debug('Search All', 'Module: ' + module);
-            const handler = MODULE_HANDLERS[module];
-            const results = handler.search({});
-            const response = formatSearchResults(results, module);
-            
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle natural language - ENHANCED WITH KNOWLEDGE BASE SEARCH
-        if (state.stage === 'GREETING' || state.stage === 'MAIN_MENU') {
-            // Check if this is a knowledge base search query
-            if (KNOWLEDGE_BASE.enabled) {
-                const queryType = detectQueryType(userInput);
-                
-                if (queryType.type === 'search' && queryType.confidence > 0.6) {
-                    // This is a documentation search
-                    const articlesIndex = loadArticlesIndex();
-                    if (articlesIndex) {
-                        const rankedArticles = rankArticlesByRelevance(userInput, articlesIndex);
-                        state.lastSearchResults = rankedArticles;
-                        const response = formatArticleResults(rankedArticles);
-                        addToHistory(state, 'assistant', response);
-                        return { message: response, state: state };
-                    }
-                }
-            }
-            
-            // Otherwise show greeting
-            const response = generateGreeting(userInfo);
-            state.stage = 'MAIN_MENU';
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // AI Intent Detection
-        const intent = classifyIntent(userInput);
-        log.debug('Natural Language Intent', JSON.stringify(intent));
-        
-        // Handle questions - NO GREETING AFTER
-        if (intent.action === 'question' || state.stage === 'QUESTION_MODE') {
-            const answer = generateAIResponse(userInput, state.context);
-            const response = '<div class="answer-box">' + answer + '</div>';
-            state.stage = 'GREETING';
-            state.currentModule = null;
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle greetings
-        if (intent.module === 'greeting' || intent.action === 'greeting') {
-            const response = generateGreeting(userInfo);
-            state.stage = 'MAIN_MENU';
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle create
-        if (intent.action === 'create' && MODULES[intent.module]) {
-            if (!userInfo.isLoggedIn) {
-                return { 
-                    message: '<div class="warning-box">Please log in to NetSuite to create records.</div>', 
-                    state: state 
-                };
-            }
-            
-            const config = CONFIG[intent.module];
-            const moduleConfig = MODULES[intent.module];
-            const response = '<strong>Create New ' + moduleConfig.name + '</strong><br><br>' +
-                           '<a href="' + config.createUrl + '" target="_blank" class="primary-button">Open Creation Form</a>';
-            
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle search
-        if (intent.action === 'search' && MODULES[intent.module]) {
-            state.currentModule = intent.module;
-            state.stage = 'SEARCH_INPUT';
-            const response = 'What ' + MODULES[intent.module].name + ' would you like to find?<br><br>' +
-                           '<small>Type a name, ID, or description. Or click Show All.</small><br>' +
-                           renderButtons(generateSmartButtons('SEARCH_INPUT', intent.module, userInfo));
-            
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Handle search input
-        if (state.stage === 'SEARCH_INPUT' && state.currentModule) {
-            const module = state.currentModule;
-            const handler = MODULE_HANDLERS[module];
-            const criteria = handler.extractCriteria(userInput);
-            const results = handler.search(criteria);
-            const response = formatSearchResults(results, module);
-            
-            addToHistory(state, 'assistant', response);
-            return { message: response, state: state };
-        }
-        
-        // Fallback
-        const response = 'I am not sure what you mean. Try:<br>' +
-                        '- Asking a question<br>' +
-                        '- Searching the documentation<br>' +
-                        '- Requesting an action like create or search<br>' +
-                        '- Or use the buttons below:<br><br>' +
-                        generateGreeting(userInfo);
-        state.stage = 'GREETING';
-        state.currentModule = null;
-        addToHistory(state, 'assistant', response);
-        return { message: response, state: state };
-    }
-
-    // ========================================
-    // MAIN REQUEST HANDLER
-    // ========================================
-    
-    function onRequest(context) {
-        try {
-            const userInfo = getCurrentUserInfo();
-            let state = getConversationState(userInfo.id);
-
-            if (context.request.method === 'POST') {
-                const userInput = context.request.parameters.custpage_userinput;
-                
-                if (userInput && userInput.trim()) {
-                    const result = processConversation(userInput, state, userInfo);
-                    state = result.state;
-                    saveConversationState(userInfo.id, state);
-                }
-            } else {
-                if (!state.conversationHistory || state.conversationHistory.length === 0) {
-                    const greeting = generateGreeting(userInfo);
-                    addToHistory(state, 'assistant', greeting);
-                    saveConversationState(userInfo.id, state);
-                }
-            }
-
-            const html = buildUI(userInfo, state);
-            context.response.write(html);
-
-        } catch (e) {
-            log.error('Suitelet Error', e);
-            context.response.write('<h1>Error: ' + e.message + '</h1>');
-        }
-    }
-
-    // ========================================
-    // UI BUILDER (ENHANCED WITH ARTICLE STYLES)
-    // ========================================
-    
-    function buildUI(userInfo, state) {
-        let chatHTML = '';
-        (state.conversationHistory || []).forEach(msg => {
-            const isUser = msg.role === 'user';
-            chatHTML += '<div class="message-row ' + (isUser ? 'user' : 'assistant') + '">';
-            chatHTML += '<div class="message-bubble">' + msg.message + '</div>';
-            chatHTML += '</div>';
+    /**
+     * Build main UI
+     */
+    function buildUI() {
+        const scriptUrl = url.resolveScript({
+            scriptId: runtime.getCurrentScript().id,
+            deploymentId: runtime.getCurrentScript().deploymentId,
+            returnExternalUrl: false
         });
 
-        return `<!DOCTYPE html>
+        return `
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGSuite Tech Assistant</title>
+    <title>AGSuite Knowledge Assistant</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
         }
-        .chat-widget {
-            width: 100%;
-            max-width: 500px;
-            height: 700px;
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            height: 90vh;
         }
-        .chat-header {
-            display: none;
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .chat-body {
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .chat-area {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #fafafa;
+            padding: 24px;
+            background: #f7fafc;
         }
-        .notice-box {
-            background: #e8edf2;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            line-height: 1.4;
-            color: #4a5568;
-            margin-bottom: 20px;
-        }
-        .message-row {
-            margin-bottom: 16px;
-            display: flex;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .message-row.assistant { justify-content: flex-start; }
-        .message-row.user { justify-content: flex-end; }
-        .message-bubble {
-            max-width: 85%;
-            padding: 12px 16px;
+
+        .welcome-message {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 16px;
             border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message h3 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-message p {
+            color: #4a5568;
             font-size: 14px;
             line-height: 1.6;
         }
-        .message-row.assistant .message-bubble {
-            background: #e8edf2;
-            color: #2d3748;
+
+        .search-results {
+            margin-top: 20px;
         }
-        .message-row.user .message-bubble {
-            background: #3f5b7b;
-            color: white;
+
+        .results-header {
+            margin-bottom: 16px;
         }
-        
-        /* Article Search Results Styles */
-        .article-result {
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            margin: 8px 0;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .article-result:hover {
-            background: #f7fafc;
-            border-color: #3f5b7b;
-            transform: translateX(4px);
-        }
-        .article-number {
-            font-weight: bold;
-            color: #3f5b7b;
-            font-size: 18px;
-            min-width: 24px;
-        }
-        .article-content {
-            flex: 1;
-        }
-        .article-title {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 4px;
+
+        .results-header p {
+            color: #4a5568;
             font-size: 14px;
         }
-        .article-summary {
-            font-size: 12px;
-            color: #718096;
-            line-height: 1.4;
-            margin-bottom: 6px;
-        }
-        .article-meta {
+
+        .result-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .category-badge {
-            background: #e8edf2;
-            color: #3f5b7b;
-            padding: 2px 8px;
+
+        .result-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .result-number {
+            background: #667eea;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            color: #2d3748;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-summary {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .result-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .keyword-tag {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 10px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 500;
         }
-        .view-link {
-            color: #3182ce;
-            font-size: 11px;
+
+        .result-arrow {
+            color: #cbd5e0;
+            font-size: 20px;
+            font-weight: bold;
+            flex-shrink: 0;
         }
-        
-        /* Article View Styles */
+
+        .result-item:hover .result-arrow {
+            color: #667eea;
+        }
+
         .article-view {
             background: white;
-            border-radius: 6px;
-            padding: 0;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         .article-header {
-            padding: 16px;
-            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
         }
+
         .article-header h2 {
-            font-size: 18px;
             color: #2d3748;
-            margin-top: 12px;
+            font-size: 24px;
+            margin-top: 16px;
         }
+
         .back-button {
-            background: #e8edf2;
-            color: #3f5b7b;
+            background: #edf2f7;
+            color: #4a5568;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .back-button:hover {
-            background: #cbd5e0;
-        }
-        .article-body {
-            padding: 20px;
-            font-size: 13px;
-            line-height: 1.7;
-            color: #2d3748;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        .article-body h3 {
-            font-size: 16px;
-            color: #1a202c;
-            margin: 20px 0 12px 0;
-            font-weight: 600;
-        }
-        .article-body p {
-            margin-bottom: 12px;
-        }
-        .article-body li {
-            margin-left: 20px;
-            margin-bottom: 6px;
-        }
-        .article-footer {
-            padding: 16px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .option-button {
-            background: white;
-            border: 1px solid #cbd5e0;
-            padding: 12px 16px;
+            padding: 10px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            text-align: left;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .back-button:hover {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .article-body {
+            color: #2d3748;
+            line-height: 1.8;
+        }
+
+        .article-body h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin: 24px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .article-body p {
+            margin-bottom: 12px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .article-body ul, .article-body ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .article-body li {
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .article-footer {
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        /* Dynamic Link Styles */
+        .create-button {
+            display: inline-block;
+            background: #48bb78;
+            color: white !important;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin: 4px 4px 4px 0;
+            box-shadow: 0 2px 4px rgba(72, 187, 120, 0.3);
+        }
+
+        .create-button:hover {
+            background: #38a169;
+            box-shadow: 0 4px 8px rgba(72, 187, 120, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .list-link, .edit-link {
+            color: #3182ce !important;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px dashed #3182ce;
+            padding-bottom: 2px;
+            transition: all 0.2s;
+        }
+
+        .list-link:hover, .edit-link:hover {
+            color: #2c5282 !important;
+            border-bottom-style: solid;
+        }
+
+        .error-placeholder {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .no-results {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-results p {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .no-results .hint {
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .input-area {
+            padding: 20px 24px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
             transition: all 0.2s;
             font-family: inherit;
         }
-        .option-button:hover {
-            background: #f7fafc;
-            border-color: #3f5b7b;
-            transform: translateX(4px);
-        }
-        .primary-button {
-            display: inline-block;
-            background: #48bb78;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .primary-button:hover { background: #38a169; }
-        .info-box, .warning-box, .answer-box, .tip-box {
-            padding: 12px;
-            border-radius: 6px;
-            margin: 10px 0;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .info-box {
-            background: #ebf8ff;
-            border-left: 3px solid #4299e1;
-            color: #2c5282;
-        }
-        .warning-box {
-            background: #fffaf0;
-            border-left: 3px solid #ed8936;
-            color: #7c2d12;
-        }
-        .answer-box {
-            background: #f0fff4;
-            border-left: 3px solid #48bb78;
-            color: #22543d;
-        }
-        .tip-box {
-            background: #fefcbf;
-            border-left: 3px solid #ecc94b;
-            color: #744210;
-        }
-        .result-item {
-            padding: 10px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-        }
-        .result-item:last-child { border-bottom: none; }
-        .item-name {
-            color: #2d3748;
-            font-weight: 500;
-        }
-        .badge {
-            display: inline-block;
-            background: #e8edf2;
-            color: #3f5b7b;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-left: 6px;
-        }
-        .rate-badge {
-            display: inline-block;
-            background: #c6f6d5;
-            color: #22543d;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-left: 6px;
-        }
-        .inline-link {
-            color: #3182ce;
-            text-decoration: none;
-            font-size: 13px;
-            margin-left: 10px;
-        }
-        .inline-link:hover { text-decoration: underline; }
-        .chat-input-area {
-            border-top: 1px solid #e2e8f0;
-            padding: 16px;
-            background: white;
-        }
-        .input-row {
-            display: flex;
-            gap: 8px;
-        }
-        .chat-input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: inherit;
+
+        #searchInput:focus {
             outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        .chat-input:focus { border-color: #3f5b7b; }
-        .send-button {
-            background: #3f5b7b;
+
+        #searchButton {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 10px 24px;
-            border-radius: 6px;
+            padding: 14px 28px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 500;
-            font-family: inherit;
-            transition: background 0.2s;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
-        .send-button:hover { background: #2d4a66; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb {
+
+        #searchButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        #searchButton:disabled {
             background: #cbd5e0;
-            border-radius: 3px;
+            cursor: not-allowed;
+            box-shadow: none;
         }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .chat-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-area::-webkit-scrollbar-track {
+            background: #edf2f7;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
-            .chat-widget {
-                height: 100vh;
-                max-width: 100%;
-                border-radius: 0;
-            }
+            body { padding: 10px; }
+            .container { height: 95vh; border-radius: 12px; }
+            .header { padding: 16px; }
+            .chat-area { padding: 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="chat-widget">
-        <div class="chat-header">
-            <img src="https://td2913181.app.netsuite.com/core/media/media.nl?id=1844&c=TD2913181&h=E9Ak7VWyhX2d81pAogdlhcD9huhCalDrzTAuOJvw1wolW0ab" alt="AGSuite Logo" class="logo" />
-            <h1>AGSuite Tech Assistant</h1>
+    <div class="container">
+        <div class="header">
+            <h1>AGSuite Knowledge Assistant</h1>
+            <p>AI-powered documentation and support for NetSuite taxation</p>
         </div>
-        
-        <div class="chat-body" id="chatBody">
-            <div class="notice-box">
-                By using this assistant, you agree not to share sensitive personal information. Conversations are logged for 90 days.
+
+        <div class="chat-area" id="chatArea">
+            <div class="welcome-message">
+                <h3>👋 Welcome to AGSuite Knowledge Base!</h3>
+                <p>I can help you find documentation about GST, TDS, invoicing, and more.</p>
+                <p style="margin-top: 8px;"><strong>Try asking:</strong> "TDS payment" or "How to create e-invoice?"</p>
             </div>
-            ${chatHTML}
         </div>
-        
-        <div class="chat-input-area">
-            <form method="POST" id="chatForm">
-                <div class="input-row">
-                    <input 
-                        type="text" 
-                        name="custpage_userinput" 
-                        class="chat-input" 
-                        placeholder="Type your message or use buttons above..."
-                        autocomplete="off"
-                        required
-                    />
-                    <button type="submit" class="send-button">Send</button>
-                </div>
-            </form>
+
+        <div class="input-area">
+            <div class="input-container">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search documentation or ask a question..."
+                    autocomplete="off"
+                />
+                <button id="searchButton" onclick="performSearch()">Search</button>
+            </div>
         </div>
     </div>
-    
+
     <script>
-        if (window.self !== window.top) {
-            document.body.classList.add('in-sidebar');
+        const SUITELET_URL = '${scriptUrl}';
+        let currentSearchResults = null;
+        let currentQuery = null;
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        window.onload = function() {
+            document.getElementById('searchInput').focus();
+        };
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) {
+                alert('Please enter a search query');
+                return;
+            }
+
+            currentQuery = query;
+            showLoading();
+
+            const btn = document.getElementById('searchButton');
+            btn.disabled = true;
+            btn.textContent = 'Searching...';
+
+            const url = SUITELET_URL + '&action=search&query=' + encodeURIComponent(query);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentSearchResults = data.results;
+                        displaySearchResults(data.html);
+                    } else {
+                        showError(data.error || 'Search failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    showError('Network error. Please try again.');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Search';
+                });
         }
-        
-        document.getElementById('chatBody').scrollTop = 999999;
-        document.querySelector('.chat-input').focus();
-        
-        function selectOption(value) {
-            document.querySelector('.chat-input').value = value;
-            document.getElementById('chatForm').submit();
+
+        function loadArticle(fileId, title) {
+            showLoading();
+            const url = SUITELET_URL + '&action=getArticle&fileId=' + fileId + '&title=' + encodeURIComponent(title);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayArticle(data.html);
+                    } else {
+                        showError(data.error || 'Failed to load article');
+                    }
+                })
+                .catch(error => {
+                    console.error('Load article error:', error);
+                    showError('Network error. Please try again.');
+                });
         }
-        
-        function viewArticle(internalId, articleId) {
-            document.querySelector('.chat-input').value = 'article:view:' + internalId + ':' + articleId;
-            document.getElementById('chatForm').submit();
-        }
-        
+
         function goBackToSearch() {
-            document.querySelector('.chat-input').value = 'navigation:backtosearch';
-            document.getElementById('chatForm').submit();
+            if (currentQuery && currentSearchResults) {
+                const html = formatSearchResults(currentSearchResults, currentQuery);
+                displaySearchResults(html);
+            } else {
+                location.reload();
+            }
+        }
+
+        function displaySearchResults(html) {
+            document.getElementById('chatArea').innerHTML = html;
+            document.getElementById('chatArea').scrollTop = 0;
+        }
+
+        function displayArticle(html) {
+            document.getElementById('chatArea').innerHTML = html;
+            document.getElementById('chatArea').scrollTop = 0;
+        }
+
+        function showLoading() {
+            document.getElementById('chatArea').innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Searching knowledge base...</p></div>';
+        }
+
+        function showError(message) {
+            document.getElementById('chatArea').innerHTML = '<div class="no-results"><p>⚠️ ' + escapeHtml(message) + '</p><p class="hint">Please try again.</p></div>';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatSearchResults(results, query) {
+            if (!results || results.length === 0) {
+                return '<div class="no-results"><p>No articles found for: <strong>' + escapeHtml(query) + '</strong></p><p class="hint">Try different keywords.</p></div>';
+            }
+
+            let html = '<div class="search-results">';
+            html += '<div class="results-header"><p>Found ' + results.length + ' relevant article' + (results.length > 1 ? 's' : '') + ' for: <strong>' + escapeHtml(query) + '</strong></p></div>';
+
+            results.forEach(function(article, index) {
+                const fileId = article.file_id || article.id;
+                html += '<div class="result-item" onclick="loadArticle(\\'' + fileId + '\\', \\'' + escapeHtml(article.title) + '\\')">';
+                html += '<div class="result-number">' + (index + 1) + '</div>';
+                html += '<div class="result-content">';
+                html += '<h3 class="result-title">' + article.title + '</h3>';
+                html += '<p class="result-summary">' + article.summary + '</p>';
+                html += '<div class="result-keywords">';
+                article.keywords.slice(0, 5).forEach(function(k) {
+                    html += '<span class="keyword-tag">' + k + '</span>';
+                });
+                html += '</div></div>';
+                html += '<div class="result-arrow">→</div></div>';
+            });
+
+            html += '</div>';
+            return html;
         }
     </script>
 </body>
-</html>`;
+</html>
+        `;
     }
 
-    return { onRequest: onRequest };
+    /**
+     * Escape HTML
+     */
+    function escapeHtml(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    /**
+     * Main onRequest handler
+     */
+    function onRequest(context) {
+        try {
+            const action = context.request.parameters.action;
+
+            if (action === 'search') {
+                const query = context.request.parameters.query;
+
+                if (!query) {
+                    context.response.write(JSON.stringify({
+                        success: false,
+                        error: 'No query provided'
+                    }));
+                    return;
+                }
+
+                log.audit('Search Request', 'Query: ' + query);
+
+                const articles = loadArticlesIndex();
+
+                if (!articles || articles.length === 0) {
+                    context.response.write(JSON.stringify({
+                        success: false,
+                        error: 'Knowledge base not available'
+                    }));
+                    return;
+                }
+
+                const rankedArticles = rankArticles(query, articles);
+                const html = formatSearchResults(rankedArticles, query);
+
+                context.response.write(JSON.stringify({
+                    success: true,
+                    html: html,
+                    results: rankedArticles
+                }));
+
+            } else if (action === 'getArticle') {
+                const fileId = context.request.parameters.fileId;
+                const title = context.request.parameters.title;
+
+                if (!fileId) {
+                    context.response.write(JSON.stringify({
+                        success: false,
+                        error: 'No file ID provided'
+                    }));
+                    return;
+                }
+
+                log.audit('Load Article', 'File ID: ' + fileId);
+
+                const content = loadArticleContent(fileId);
+                const html = formatArticleContent(content, title || 'Article');
+
+                context.response.write(JSON.stringify({
+                    success: true,
+                    html: html
+                }));
+
+            } else {
+                // Initial page load
+                context.response.write(buildUI());
+            }
+
+        } catch (e) {
+            log.error('Suitelet Error', e.toString());
+
+            if (context.request.parameters.action) {
+                context.response.write(JSON.stringify({
+                    success: false,
+                    error: 'Internal server error: ' + e.message
+                }));
+            } else {
+                context.response.write('<html><body><h1>Error</h1><p>' + escapeHtml(e.message) + '</p></body></html>');
+            }
+        }
+    }
+
+    return {
+        onRequest: onRequest
+    };
 });
