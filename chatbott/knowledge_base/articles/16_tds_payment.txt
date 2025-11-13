@@ -2,6 +2,11 @@ TDS PAYMENT PROCESSING
 
 Purpose: Process TDS payment to tax authorities and generate challan records.
 
+QUICK ACCESS:
+- [CREATE:TDS_PAYMENT] - Create a new TDS Payment record
+- [LIST:TDS_PAYMENT] - View all TDS Payment records
+- [LIST:TDS_CHALLAN] - View TDS Challan records
+
 Navigation Path: AG Taxation > TDS Payment > TDS Payment
 
 STEP-BY-STEP PROCESS:
