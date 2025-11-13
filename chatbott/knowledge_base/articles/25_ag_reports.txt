@@ -1,0 +1,214 @@
+AG REPORTS (GSTR-1, GSTR-2, GSTR-3B)
+
+Purpose: Generate statutory GST returns and compliance reports.
+
+Navigation Path: AG Taxation > AG Reports
+
+GSTR-1 REPORT (Sales Return):
+
+Navigation: AG Taxation > AG Reports > AGTAX GSTR-1 Report
+
+Report Sections:
+- B2B: Business to Business (registered customers)
+- B2CL: Business to Consumer Large (> ₹2.5 lakh)
+- B2CS: Business to Consumer Small (< ₹2.5 lakh)
+- CDNR: Credit/Debit Notes Registered
+- CDNUR: Credit/Debit Notes Unregistered
+- EXP: Export transactions
+- HSN: HSN-wise summary
+
+Filter Options:
+- Customer: Specific customer
+- Location: Company location
+- GST Type: Intra-state/Inter-state/Export
+- Subsidiary: Entity
+- From Date: Start date
+- To Date: End date
+- Select Report: Choose specific section or ALL
+
+Report Columns:
+- GSTIN/UIN of Recipient
+- Recipient Name
+- Invoice Number
+- Invoice Date
+- Invoice Value
+- Place of Supply
+- Reverse Charge (Y/N)
+- Invoice Type
+- E-commerce GSTIN
+- Rate %
+- Taxable Value
+- IGST Value
+- CGST Value
+- SGST Value
+- Cess Amount
+
+Actions:
+- Click "Search" to generate
+- Click "Export" for Excel download
+
+GSTR-2 REPORT (Purchase Return):
+
+Navigation: AG Taxation > AG Reports > AGTAX_GSTR_2_Report
+
+Report Sections:
+- B2B: Business to Business purchases
+- B2BUR: Business to Business Unregistered
+- IMPS: Import of Services
+- IMPG: Import of Goods
+- HSN: HSN-wise summary
+- CDNR: Credit/Debit Notes Registered
+- CDNUR: Credit/Debit Notes Unregistered
+
+Filter Options:
+- Vendor: Specific vendor
+- Location: Company location
+- GST Type: Purchase classification
+- Subsidiary: Entity
+- From Date: Start date
+- To Date: End date
+- Select Report: Choose section or ALL
+
+Report Columns:
+- GSTIN of Supplier
+- PAN No
+- Trade/Legal Name
+- Invoice Number
+- Invoice Type
+- Invoice Date
+- Invoice Value
+- Place of Supply
+- Supply attract Reverse Charge (Y/N)
+- Rate %
+- Taxable Value
+- IGST Amount
+- CGST Amount
+- SGST Amount
+- Cess Amount
+- E-commerce GSTIN
+
+Actions:
+- Click "Search" to generate
+- Click "Export" for Excel download
+
+GSTR-3B REPORT (Monthly Summary Return):
+
+Navigation: AG Taxation > AG Reports > AGTAX GSTR-3B Report
+
+Report Sections:
+
+1. Outward Supplies:
+   - Taxable outward supplies
+   - Zero-rated supplies
+   - Exempted supplies
+   - Non-GST outward supplies
+
+2. ITC (Input Tax Credit) Available:
+   - Imports of Goods
+   - Imports of Services
+   - Inward supplies on reverse charge
+   - All other ITC
+   - From supplier under composition scheme
+
+3. ITC Reversed:
+   - As per rules 38, 42, 43
+   - Others
+
+4. Ineligible ITC:
+   - As per Section 17(5)
+   - Others
+
+5. Tax Liability:
+   - CGST payable
+   - SGST payable
+   - IGST payable
+   - Cess payable
+
+6. Interest & Late Fee:
+   - If applicable
+
+Filter Options:
+- Date: From date
+- Date: To date
+- Subsidiary: Select entity
+- GSTIN: Auto-populated
+- Place of Supply: State
+
+Actions:
+- Enter date range
+- Click "Search"
+- Review auto-calculated figures
+- Click "Export" for Excel format
+
+KEY FEATURES:
+
+Auto-Calculation:
+- All GSTR-3B sections auto-calculated
+- Reconciliation with GSTR-1 and GSTR-2
+- Ineligible ITC properly reflected
+- Ready for government portal upload
+
+Data Accuracy:
+- Real-time calculation
+- Transaction-level tracking
+- Automatic updates
+- Audit trail maintained
+
+Compliance:
+- Monthly filing (for most)
+- Quarterly filing (for small taxpayers)
+- Due dates: 20th of next month
+- Late filing penalties apply
+
+RECONCILIATION PROCESS:
+
+GSTR-1 vs GSTR-3B:
+- Outward supplies should match
+- Verify taxable value
+- Check tax amounts
+- Resolve discrepancies
+
+GSTR-2 vs GSTR-3B:
+- ITC claimed should match
+- Verify purchase values
+- Check input credit
+- Resolve mismatches
+
+FILING WORKFLOW:
+
+1. Generate Reports:
+   - GSTR-1 for sales
+   - GSTR-2 for purchases
+   - GSTR-3B for summary
+
+2. Review Data:
+   - Check completeness
+   - Verify accuracy
+   - Reconcile sections
+   - Resolve errors
+
+3. Export Reports:
+   - Excel format
+   - Ready for upload
+   - Government portal
+
+4. Upload to Portal:
+   - GST portal login
+   - Upload JSON/Excel
+   - Validate data
+   - Submit returns
+
+5. Payment:
+   - Calculate liability
+   - Generate challan
+   - Make payment
+   - Update records
+
+IMPORTANT NOTES:
+- Run reports monthly/quarterly
+- Verify data before filing
+- Keep export files for records
+- Reconcile with books
+- File within due dates
+- Maintain documentation
+- Critical for GST compliance

@@ -1,0 +1,69 @@
+TAX GROUPS SETUP
+
+Purpose: Combine multiple tax codes (CGST + SGST or IGST) into consolidated groups.
+
+Navigation Path: Setup > Accounting > Tax Groups > New
+
+CONFIGURATION STEPS:
+
+1. Select Country: India
+
+2. Enter Tax Name (e.g., "CGST/SGST @ 18%")
+
+3. Add tax code lines:
+   - Select individual tax codes (e.g., CGST @ 9%, SGST @ 9%)
+   - Specify rate for each
+   - Set basis to 100
+   - Assign tax type
+
+Result: The consolidated rate (e.g., 18%) displays automatically at the group level.
+
+KEY FEATURE: 
+The system calculates the combined rate based on line-level selections.
+
+COMMON TAX GROUP CONFIGURATIONS:
+
+For Intra-State Transactions:
+- CGST/SGST @ 5% (CGST 2.5% + SGST 2.5%)
+- CGST/SGST @ 12% (CGST 6% + SGST 6%)
+- CGST/SGST @ 18% (CGST 9% + SGST 9%)
+- CGST/SGST @ 28% (CGST 14% + SGST 14%)
+
+For Inter-State Transactions:
+- IGST @ 5%
+- IGST @ 12%
+- IGST @ 18%
+- IGST @ 28%
+
+TAX GROUP STRUCTURE:
+
+Tax Group: CGST/SGST @ 18%
+├── Line 1: CGST @ 9% (Basis: 100)
+└── Line 2: SGST @ 9% (Basis: 100)
+Total: 18%
+
+Tax Group: IGST @ 18%
+└── Line 1: IGST @ 18% (Basis: 100)
+Total: 18%
+
+WHY USE TAX GROUPS:
+
+1. Simplification: Users select one tax group instead of multiple tax codes
+2. Accuracy: Ensures correct combination of CGST+SGST
+3. Compliance: Maintains proper tax splitting for returns
+4. Consistency: Standardizes tax application across transactions
+
+BEST PRACTICES:
+
+- Create separate tax groups for each rate (5%, 12%, 18%, 28%)
+- Name tax groups clearly indicating rate and components
+- Create both intra-state (CGST/SGST) and inter-state (IGST) versions
+- Test tax groups on sample transactions before deployment
+- Document tax group mapping for user training
+
+IMPORTANT NOTES:
+
+- Tax groups are required for proper GST calculation
+- System automatically selects appropriate group based on location
+- Always verify the consolidated rate matches expected total
+- Tax groups simplify transaction entry for users

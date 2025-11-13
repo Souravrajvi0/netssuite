@@ -1,0 +1,108 @@
+TAX COMPANY INFO SETUP
+
+Purpose: Configure company details required for E-TDS return filing.
+
+Navigation Path: AG Taxation > TDS Payment > Tax Company Info > New
+
+MANDATORY FIELDS:
+
+Basic Information:
+- Tax Deduction Account No: TAN (e.g., MUMX12345X)
+- Permanent Account No: PAN (e.g., AABCT1234C)
+- Subsidiary: Select entity
+- Company Name: Legal name
+- Type of Deductor: Company/Individual
+- Branch/Division: Location identifier
+
+Address Details:
+- Building Name: Premises name
+- Road/Street/Lane: Address line
+- Area/Location: Locality
+- Town/City/District: City name
+- State: Select state
+- GST State: GST state code
+- Pincode: 6-digit code
+
+Contact Information:
+- Telephone No: Contact number
+- Email: Official email
+- STD Code: Area code
+
+Responsible Person:
+- Person Responsible for Deduction: Name
+- Person Responsible State: State
+- Designation: Job title
+
+Return Configuration:
+- Book Entry: Yes/No
+- Return Type: 26Q/27Q/24Q
+
+Additional Fields (if applicable):
+- PAO Code: If applicable
+- DDO Code: If applicable
+- Ministry Name: If applicable
+- Ministry Name Other: Alternative name
+- PAO Registration No: If applicable
+- DDO Registration No: If applicable
+- AIN: If applicable
+- Gross Turnover of Previous Year: Amount
+
+KEY NOTE: This information is mandatory for generating E-TDS files.
+
+TAN (TAX DEDUCTION ACCOUNT NUMBER):
+- 10-character alphanumeric
+- Format: AAAA99999A
+- First 4: Location code
+- Next 5: Numbers
+- Last 1: Check character
+
+DEDUCTOR TYPES:
+
+Company (C):
+- Private Limited
+- Public Limited
+- LLP
+
+Individual (I):
+- Proprietorships
+- Professionals
+- HUF
+
+Government (G):
+- Central Government
+- State Government
+- PSUs
+
+Others (O):
+- Trusts
+- Societies
+- Associations
+
+RETURN TYPES:
+
+Form 24Q:
+- TDS on salary
+- Quarterly filing
+- Due dates: 31st July, Oct, Jan, May
+
+Form 26Q:
+- TDS on payments other than salary
+- Quarterly filing
+- Due dates: 31st July, Oct, Jan, May
+
+Form 27Q:
+- TDS on payments to non-residents
+- Quarterly filing
+- Due dates: 31st July, Oct, Jan, May
+
+BOOK ENTRY:
+Yes: For government deductors (PAO/DDO)
+No: For all others
+
+IMPORTANT NOTES:
+- One-time setup per entity
+- Required before E-TDS generation
+- Keep updated with current details
+- Verify TAN and PAN accuracy
+- Update when officers change
+- Essential for TRACES filing

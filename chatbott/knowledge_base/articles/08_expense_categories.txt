@@ -1,0 +1,195 @@
+EXPENSE CATEGORIES SETUP
+
+Purpose: Configure expense categories with default GST parameters.
+
+Navigation Path: Setup > Accounting > Expense Categories
+
+CONFIGURABLE FIELDS:
+
+1. Nature of Item: Goods or Services classification
+2. HSN/SAC Code: Applicable classification code
+3. RCM Applicable: Reverse Charge Mechanism flag
+
+BENEFIT: 
+Streamlines expense entry by pre-populating tax details.
+
+WHAT ARE EXPENSE CATEGORIES:
+
+Expense categories are used in:
+- Expense Reports
+- Employee reimbursements
+- Credit card expenses
+- Vendor bills (optional)
+
+Pre-configuring GST details ensures:
+- Consistent tax treatment
+- Accurate ITC claims
+- Faster expense processing
+- Compliance with GST rules
+
+COMMON EXPENSE CATEGORIES:
+
+Travel Expenses:
+├── Nature: Services
+├── SAC: 996411 (Transportation services)
+└── RCM: No
+
+Hotel/Accommodation:
+├── Nature: Services
+├── SAC: 996311 (Accommodation services)
+└── RCM: No
+
+Food & Beverages:
+├── Nature: Services
+├── SAC: 996331 (Restaurant services)
+└── RCM: No (but may be ineligible ITC)
+
+Professional Fees:
+├── Nature: Services
+├── SAC: 998313 (Legal services) or similar
+└── RCM: May be Yes (if unregistered vendor)
+
+Office Supplies:
+├── Nature: Goods
+├── HSN: Varies by item
+└── RCM: No
+
+Rent:
+├── Nature: Services
+├── SAC: 997212 (Rental services)
+└── RCM: May be Yes
+
+CONFIGURATION STEPS:
+
+1. Navigate to Expense Categories:
+   Setup > Accounting > Expense Categories
+
+2. Select or Create Category:
+   - Click on existing category to edit
+   - Or click "New" to create new
+
+3. Configure GST Fields:
+   - Category Name: Clear identifier
+   - Nature of Item: Goods/Services
+   - HSN/SAC Code: Appropriate code
+   - RCM Applicable: Check if applicable
+   - Default Account: GL account
+
+4. Save Configuration:
+   - Click Save
+   - Test with expense report
+
+BENEFITS OF EXPENSE CATEGORY SETUP:
+
+1. Employee Experience:
+   - Simplified expense submission
+   - Auto-populated GST details
+   - Faster reimbursement
+
+2. Finance Team Benefits:
+   - Reduced manual entry
+   - Accurate tax calculations
+   - Proper ITC classification
+   - Faster processing
+
+3. Compliance Benefits:
+   - Consistent GST treatment
+   - Accurate GSTR-2 reporting
+   - Proper ITC documentation
+   - Audit trail
+
+EXAMPLE CONFIGURATIONS:
+
+Category: Business Travel - Air
+├── Description: Airfare for business travel
+├── Account: 6100 Travel - Airfare
+├── Nature: Services
+├── SAC: 996411
+├── RCM: No
+└── Ineligible ITC: Depends on policy
+
+Category: Professional Services - Legal
+├── Description: Legal consulting fees
+├── Account: 6500 Professional Fees - Legal
+├── Nature: Services
+├── SAC: 998313
+├── RCM: Check if vendor unregistered
+└── Ineligible ITC: No
+
+Category: Office Rent
+├── Description: Monthly office rent
+├── Account: 6800 Rent Expense
+├── Nature: Services
+├── SAC: 997212
+├── RCM: May apply
+└── Ineligible ITC: No
+
+EXPENSE REPORT WORKFLOW WITH GST:
+
+1. Employee creates expense report
+2. Selects pre-configured expense category
+3. GST fields auto-populate from category setup
+4. Employee adds receipt and submits
+5. Finance reviews and approves
+6. System posts with correct GST treatment
+
+IMPORTANT CONSIDERATIONS:
+
+Ineligible ITC on Expenses:
+- Food & beverages (subject to conditions)
+- Personal vehicle expenses
+- Travel benefits to employees
+- Configure appropriately to block ITC
+
+RCM on Expenses:
+- Unregistered vendor services
+- Certain specified services
+- Import of services
+- Mark categories accordingly
+
+BEST PRACTICES:
+
+- Create comprehensive category list
+- Map to appropriate SAC/HSN codes
+- Configure RCM flags correctly
+- Review categories periodically
+- Update when GST rules change
+- Train employees on category selection
+- Document category usage guidelines
+- Monitor for compliance
+
+INTEGRATION WITH OTHER MODULES:
+
+Expense Reports:
+- Categories appear in dropdown
+- GST details auto-fill
+- Simplified employee experience
+
+Vendor Bills:
+- Can use expense categories
+- Optional alternative to items
+- Useful for service expenses
+
+Credit Card Expenses:
+- Map card expenses to categories
+- Auto-classification
+- Streamlined processing
+
+COMMON MISTAKES TO AVOID:
+
+- Wrong SAC/HSN code selection
+- Incorrect RCM flag setting
+- Not updating categories for rule changes
+- Poor category naming convention
+- Missing category documentation
+- Not training employees
+
+IMPORTANT NOTES:
+
+- Expense category setup is optional but highly recommended
+- Reduces errors in expense processing
+- Ensures consistent GST treatment
+- Critical for employee reimbursements
+- Helps in accurate GSTR-2 reporting
+- Regular review needed for compliance
+- Changes don't affect past expenses

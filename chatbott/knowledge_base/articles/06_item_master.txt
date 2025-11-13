@@ -1,0 +1,138 @@
+ITEM MASTER GST SETUP
+
+Purpose: Pre-configure GST details on inventory items for automatic population on transactions.
+
+Navigation Path: List > Accounting > Item
+
+GST SUBTAB FIELDS (on item form):
+
+1. HSN/SAC Code: Product classification code
+2. Nature of Item: Goods or Services
+3. GST Unit: Unit of measurement
+4. GST Unit Code: Code for the unit
+5. Tax rates: Applicable GST percentages
+
+BENEFIT: 
+When items are selected on transactions, GST details auto-fill from the master.
+
+ITEM TYPES AND GST CONFIGURATION:
+
+Inventory Items:
+- HSN Code (for goods)
+- Taxable/Non-taxable
+- GST rate (5%, 12%, 18%, 28%)
+- GST unit (Nos, Kgs, Meters, etc.)
+
+Service Items:
+- SAC Code (for services)
+- Service category
+- GST rate
+- GST unit (often "Service")
+
+NATURE OF ITEM:
+
+Goods:
+- Physical products
+- Inventory items
+- Tangible assets
+
+Services:
+- Intangible offerings
+- Consulting, support, maintenance
+- Professional services
+
+GST UNITS COMMON VALUES:
+
+For Goods:
+- NOS (Numbers)
+- KGS (Kilograms)
+- MTR (Meters)
+- LTR (Liters)
+- BOX (Boxes)
+- PCS (Pieces)
+
+For Services:
+- SER (Service)
+- HRS (Hours)
+- DAY (Days)
+- MON (Months)
+
+GST UNIT CODE:
+
+Standard codes as per GST compliance:
+- NOS: Numbers
+- KGS: Kilograms
+- MTR: Meters
+- And so on...
+
+CONFIGURATION STEPS:
+
+1. Open Item Record:
+   - Navigate to: List > Accounting > Item
+   - Select existing item or create new
+
+2. Go to GST Subtab:
+   - Scroll to GST section
+   - Find GST-specific fields
+
+3. Configure GST Details:
+   - HSN/SAC Code: Select from dropdown
+   - Nature of Item: Select Goods/Services
+   - GST Unit: Enter unit of measure
+   - GST Unit Code: Enter standard code
+   - Tax Rate: Set applicable rate
+
+4. Save Item:
+   - Click Save
+   - Test on sample transaction
+
+BENEFITS OF ITEM-LEVEL GST SETUP:
+
+1. Automation: GST details auto-populate on transactions
+2. Accuracy: Eliminates manual entry errors
+3. Speed: Faster transaction processing
+4. Consistency: Same GST treatment across all transactions
+5. Compliance: Ensures correct HSN/SAC mapping
+6. Reporting: Accurate HSN summary in GSTR-1
+
+EXAMPLE CONFIGURATION:
+
+Item: Laptop Computer
+├── HSN Code: 8471
+├── Nature: Goods
+├── GST Unit: NOS
+├── GST Unit Code: NOS
+└── Tax Rate: 18%
+
+When this item is added to an invoice:
+- HSN Code automatically fills: 8471
+- Nature automatically sets: Goods
+- GST Unit automatically sets: NOS
+- Tax Code automatically selects: CGST/SGST @ 18% (intra-state) or IGST @ 18% (inter-state)
+
+BEST PRACTICES:
+
+- Configure GST details on all items before going live
+- Use correct HSN/SAC codes (verify with govt. portal)
+- Set appropriate GST units and codes
+- Review and update items periodically
+- Train users on item selection for accuracy
+- Maintain item master documentation
+- Test items on transactions after setup
+
+COMMON MISTAKES TO AVOID:
+
+- Wrong HSN/SAC code selection
+- Incorrect nature of item (Goods vs Services)
+- Missing GST unit codes
+- Wrong tax rate configuration
+- Not updating items when rates change
+
+IMPORTANT NOTES:
+
+- Item-level setup is optional but highly recommended
+- Can override item defaults on transaction if needed
+- Changes to item master don't affect past transactions
+- Regular review needed when GST rates change
+- Proper setup reduces transaction processing time
+- Critical for accurate GSTR-1 HSN summary reporting

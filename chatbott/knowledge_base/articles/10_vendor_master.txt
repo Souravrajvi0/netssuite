@@ -1,0 +1,243 @@
+VENDOR MASTER CREATION
+
+Purpose: Set up vendor master records with GST, PAN, and TDS configurations.
+
+Navigation Path: List > Relationships > Vendors > New
+
+SETUP STEPS:
+
+1. Select Custom Form:
+   - Mandatory: Choose "India Vendor Form"
+
+2. Primary Information:
+   - Company Name
+   - Vendor ID
+   - Subsidiary (India entity)
+   - Other required fields
+
+3. Add Address (Address subtab):
+   - Click pencil icon
+   - Enter address details:
+     * Country: India
+     * Address lines
+     * City
+     * State: Select state
+     * ZIP: Postal code
+   
+   GST Fields:
+   - GSTIN: 15-character number
+   - GST State: Select (e.g., Maharashtra)
+   - GST State Code: Auto-populates (e.g., 27)
+   
+   - Click OK, then Add
+   
+   Note: Multiple addresses can be added
+
+4. AGTAX Subtab Configuration:
+
+   a. Basic GST Details:
+   - Vendor/Master GSTIN: Primary GST number
+   - PAN Availability: Yes/No
+   - PAN NO: If available
+   - GST Reg Type: Regular/Unregistered/Overseas/SEZ
+   - TAN: If applicable
+   - Use Billing Address: Checkbox
+   - Aadhaar No: If applicable
+   - E-commerce Operator: Checkbox
+   - Is GST Liable: Checkbox
+   - Non-Resident Indian: Checkbox
+
+   b. TDS Configuration (Vendor TDS Relation sublist):
+   - TDS Type: Select type (e.g., "TDS on Professional Fees")
+   
+   System auto-populates from TDS Master:
+   - Section (e.g., 194J)
+   - TDS Rate (e.g., 10.0%)
+   - TDS Account
+   - TDS Employee checkbox
+   - TDS Threshold
+   - Cumulative Threshold
+   - Assessee Code
+   - Empty PAN rate
+   - TDS Item
+   - LTDS Rate
+   - AO Concession: Yes/No
+   - Non-Resident: Yes/No
+
+   c. LTDS Configuration (TDS Vendor AO Concession sublist):
+   If vendor has lower TDS certificate:
+   - Certificate Number: Mandatory
+   - Certificate From Date: Mandatory
+   - Certificate To Date: Mandatory
+   - TDS Type: Select type
+   - AO Rate/LTDS Rate: Lower rate (e.g., 2%)
+   - AO/LTDS Threshold Limit: If applicable
+   - File-LTDS Certificate: Attachment
+
+   d. Special Provisions:
+   - Overlook Threshold Limit: Checkbox
+   - Is Vendor Has Certificate: Checkbox
+   - 206AB: Special rate checkbox
+   - 206CCA: Special provision checkbox
+
+   - Click Save
+
+KEY NOTES:
+- Only TDS types mapped on vendor can be applied to bills
+- LTDS certificates override standard TDS rates
+- Multiple TDS types can be mapped to single vendor
+
+GST REGISTRATION TYPES FOR VENDORS:
+
+Regular:
+- Registered under GST
+- Provides GSTIN
+- Charges GST on bills
+- Normal tax credit available
+
+Unregistered:
+- Below threshold or exempt
+- No GSTIN
+- May require RCM
+- Special tax treatment
+
+Overseas:
+- Foreign vendors
+- Import of services
+- IGST applicability
+- RCM applicable
+
+SEZ:
+- Special Economic Zone
+- Special tax benefits
+- Zero-rated supplies
+- Additional compliance
+
+TDS TYPE MAPPING:
+
+Common TDS Types to Map:
+
+194C - Contractors:
+├── Section: 194C
+├── Rate: 2% (Company) / 1% (Individual)
+├── Threshold: ₹30,000
+└── Cumulative: ₹1,00,000
+
+194J - Professional Fees:
+├── Section: 194J
+├── Rate: 10%
+├── Threshold: ₹30,000
+└── Cumulative: ₹30,000
+
+194H - Commission:
+├── Section: 194H
+├── Rate: 5%
+├── Threshold: ₹15,000
+└── Cumulative: ₹15,000
+
+194I - Rent:
+├── Section: 194I
+├── Rate: 2% (P&M) / 10% (Building)
+├── Threshold: ₹2,40,000
+└── Cumulative: Annual
+
+LTDS (LOWER DEDUCTION CERTIFICATE):
+
+When vendor has certificate from Income Tax department:
+1. Upload certificate attachment
+2. Enter certificate number
+3. Enter validity dates (From/To)
+4. Enter lower rate (e.g., 2% instead of 10%)
+5. System applies lower rate within validity period
+
+Benefits:
+- Reduces TDS burden on vendor
+- Improves vendor cash flow
+- System auto-validates certificate dates
+- Reverts to normal rate after expiry
+
+206AB PROVISION (Non-filers):
+
+Applicable when vendor:
+- Has PAN but didn't file ITR in last 2 years
+- Identified as specified person under 206AB
+
+Higher rate calculation:
+- Higher of: (Normal Rate × 2) OR 206AB Rate
+- Example: Normal 10%, then 206AB = 20%
+
+System behavior:
+- Check 206AB checkbox on vendor
+- System automatically applies higher rate
+- Shows separately in TDS reports
+
+EXAMPLE VENDOR CONFIGURATIONS:
+
+Vendor 1: Regular Contractor (Company)
+├── Name: ABC Constructions Pvt Ltd
+├── GSTIN: 27AABCA1234C1Z5
+├── GST Type: Regular
+├── PAN: AABCA1234C
+├── TDS Mapping:
+│   └── 194C @ 2%
+└── LTDS: No
+
+Vendor 2: Professional Services (Individual, LTDS)
+├── Name: CA John Doe
+├── GSTIN: (blank - unregistered)
+├── GST Type: Unregistered
+├── PAN: ABCPD1234E
+├── TDS Mapping:
+│   └── 194J @ 10%
+└── LTDS Certificate:
+    ├── Number: CERT12345
+    ├── Rate: 2% (instead of 10%)
+    └── Valid: 01/04/2024 to 31/03/2025
+
+Vendor 3: Overseas Consultant
+├── Name: Global Consulting LLC
+├── GSTIN: (blank)
+├── GST Type: Overseas
+├── PAN: (blank)
+├── TDS Mapping:
+│   └── 194J @ 20% (no PAN rate)
+└── RCM Applicable: Yes
+
+BEST PRACTICES:
+
+- Collect GSTIN and PAN before vendor creation
+- Map appropriate TDS types based on service
+- Maintain LTDS certificate repository
+- Regular validation of certificates
+- Update 206AB status periodically
+- Review vendor data quarterly
+- Document vendor categories
+- Train AP team on vendor setup
+- Verify GSTIN on govt portal
+
+VALIDATION CHECKS:
+
+System validates:
+- GSTIN format and state code
+- PAN format
+- TDS type must exist in TDS Master
+- LTDS certificate dates
+- Threshold values
+
+Common errors:
+- TDS type not configured in master
+- Missing GSTIN for regular vendors
+- Incorrect PAN format
+- Expired LTDS certificates
+- Wrong TDS section mapping
+
+IMPORTANT NOTES:
+
+- India Vendor Form is mandatory for AG Taxation
+- TDS mapping determines auto-deduction on bills
+- GSTIN determines tax credit eligibility
+- LTDS certificates need timely renewal
+- 206AB affects TDS rates significantly
+- Multiple TDS types can apply to one vendor
+- Changes affect future bills only
+- Regular vendor master review essential for compliance

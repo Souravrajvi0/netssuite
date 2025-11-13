@@ -1,0 +1,90 @@
+TDS PAYMENT PROCESSING
+
+Purpose: Process TDS payment to tax authorities and generate challan records.
+
+Navigation Path: AG Taxation > TDS Payment > TDS Payment
+
+STEP-BY-STEP PROCESS:
+
+1. Search Criteria:
+   - Select TDS Section (e.g., 194J)
+   - Enter From Date and To Date
+   - Select Assessee Type (Company/Individual)
+   - Click Search
+
+2. Select Transactions:
+   - Choose subsidiary first
+   - Mark individual transactions or use "Mark All"
+
+3. Payment Details (all mandatory fields):
+   - Bank: Select bank account
+   - Date: Payment date
+   - Tax Agency: Default Tax Agency IN
+   - BSR Code: Bank's BSR code
+   - Payment Date: Actual payment date
+   - Challan: Challan number
+   - Subsidiary: Entity making payment
+   - TDS Section: Verify section
+   - Assessee Code: Company/Individual
+   - Apply Interest: Check if applicable
+   - Interest Amount: If applicable
+   - Interest Account: GL account for interest
+
+4. Make Payment:
+   - Click "Make Payment" button
+   - System generates TDS Challan record
+   - Check record is created linked to payment
+
+KEY FEATURE: All associated bills are visible on the challan detail page.
+
+TDS PAYMENT WORKFLOW:
+
+Transaction Search → Select Bills → Enter Payment Details → Generate Challan
+
+BANK DETAILS REQUIRED:
+- Bank account for payment
+- BSR Code (7-digit code)
+- Payment date
+- Challan number (from bank)
+
+BSR CODE:
+- Basic Statistical Return Code
+- 7-digit bank branch code
+- Obtained from bank
+- Required for TDS payment
+
+ASSESSEE TYPE:
+Company (C):
+- Corporate entities
+- Registered companies
+
+Individual/HUF (I):
+- Individuals
+- Hindu Undivided Families
+
+INTEREST ON LATE PAYMENT:
+If TDS paid after due date:
+- Check "Apply Interest"
+- Enter interest amount
+- Select interest GL account
+- Interest calculated as per Section 201
+
+TDS PAYMENT DUE DATES:
+- Salary (194): 7th of next month
+- Non-Salary: 30th of next month (if March: 30th April)
+- Government Deductors: Same day
+
+CHALLAN GENERATION:
+After clicking "Make Payment":
+- TDS Challan record created
+- Internal ID assigned
+- Payment reference linked
+- Bills linked to challan
+- Ready for verification
+
+IMPORTANT NOTES:
+- Payment cannot be edited once challan generated
+- BSR Code must be accurate
+- Challan number from bank statement
+- Keep challan record for audit
+- File returns using challan details

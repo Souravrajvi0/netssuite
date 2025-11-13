@@ -1,0 +1,93 @@
+HSN/SAC CODE CREATION
+
+Purpose: Define Harmonized System of Nomenclature (HSN) codes for goods and Service Accounting Codes (SAC) for services.
+
+Navigation Path: AG Taxation > Master Data > HSN/SAC List > New
+
+REQUIRED FIELDS:
+
+1. Code: HSN/SAC number (e.g., 999622)
+2. Type: SAC or HSN
+3. Tax Rate: Under Tax Rate Details subtab (e.g., 18.0%)
+
+OPTIONAL FIELDS:
+
+- Description: Product/service description
+- From Date: Effective start date
+- To Date: Effective end date
+
+KEY NOTES: 
+Tax rates defined here will auto-populate on transactions when the HSN/SAC code is selected.
+
+HSN vs SAC:
+
+HSN (Harmonized System of Nomenclature):
+- Used for goods/products
+- 4, 6, or 8 digit classification system
+- Example: 8471 (Computers and peripheral equipment)
+
+SAC (Service Accounting Code):
+- Used for services
+- 6-digit classification system
+- Example: 998314 (Information technology consulting services)
+
+COMMON HSN CODES:
+
+- 3004: Medicaments
+- 8471: Computers
+- 8517: Telephone sets, smartphones
+- 8703: Motor cars
+- 9403: Furniture
+
+COMMON SAC CODES:
+
+- 995411: Accounting and bookkeeping services
+- 996812: Insurance services
+- 998311: Software design and development
+- 998314: IT consulting
+- 999622: Management consulting services
+
+HSN/SAC CODE STRUCTURE:
+
+For Goods (HSN):
+- First 2 digits: Chapter (e.g., 84 = Machinery)
+- Next 2 digits: Heading (e.g., 8471 = Computers)
+- Next 2 digits: Sub-heading (optional)
+- Last 2 digits: Tariff item (optional)
+
+For Services (SAC):
+- 99: Service indicator
+- Next 2 digits: Main service category
+- Last 2 digits: Detailed service type
+
+TAX RATE CONFIGURATION:
+
+Under Tax Rate Details subtab:
+1. Enter applicable GST rate (5%, 12%, 18%, 28%)
+2. Rate will auto-populate when code is selected on transactions
+3. Multiple rates can be configured with effective dates
+
+BENEFITS OF HSN/SAC SETUP:
+
+1. Auto-population: Tax rates automatically fill on transactions
+2. Compliance: Ensures correct classification for returns
+3. Reporting: Required for GSTR-1 HSN summary
+4. Accuracy: Reduces manual entry errors
+5. Audit Trail: Complete product/service classification
+
+BEST PRACTICES:
+
+- Research correct HSN/SAC codes before setup
+- Include detailed descriptions for user reference
+- Configure tax rates accurately
+- Use effective dates for rate changes
+- Regular review and update for new products/services
+- Maintain master list document for reference
+
+IMPORTANT NOTES:
+
+- HSN/SAC codes are mandatory for GST compliance
+- Codes must be selected on all taxable transactions
+- Incorrect classification can lead to compliance issues
+- System validates HSN/SAC format during entry
+- Update codes when government revises classification

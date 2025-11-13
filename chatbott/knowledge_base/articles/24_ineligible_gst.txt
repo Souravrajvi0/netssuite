@@ -1,0 +1,131 @@
+INELIGIBLE GST (BLOCKED ITC)
+
+Purpose: Handle blocked Input Tax Credit (ITC) scenarios where GST cannot be recovered under Section 17(5) of CGST Act.
+
+WHAT IS INELIGIBLE GST:
+- GST paid on purchases/expenses that cannot be claimed as ITC under GST law
+- Portion of GST that cannot be recovered from government
+- Must be treated as cost to business
+
+USE CASES (As per Section 17(5) of CGST Act):
+
+Blocked ITC Scenarios:
+- Motor vehicles for personal use
+- Food, beverages, outdoor catering
+- Travel benefits to employees
+- Membership of clubs, health, fitness centers
+- Personal expenses
+- Goods/services for personal consumption
+- Works contract for immovable property
+- Goods lost, stolen, destroyed, written off
+- Goods given as free samples
+
+SYSTEM FUNCTIONALITY:
+- Posts GST amount back to expense account instead of GST input account
+- Increases the cost of the expense
+- No ITC claim available
+
+CONFIGURATION STEPS:
+
+1. Create Vendor Bill:
+   - Go to: Transactions > Payables > Enter Bills
+   - Fill all required header details
+
+2. Expense Line Entry:
+   - Select Account (e.g., "6400 Insurance - Property & General Liability")
+   - Select HSN/SAC Code (e.g., 996812)
+   - Enter Amount (e.g., 100.00)
+   - Select Tax Code (e.g., "CGST:CGST/SGST @18%")
+
+3. Apply Ineligible GST:
+   - Scroll right on the expense line
+   - Locate "Ineligible GST Type" column
+   - Select from dropdown:
+     * Blocked ITC 17(5): As per CGST Act Section 17(5)
+     * Ineligible ITC (POS Rule): Place of Supply rule
+
+4. Click Save
+
+GL IMPACT VERIFICATION:
+
+Go to "GL Impact" subtab
+
+Standard GL Impact (without Ineligible GST):
+- Expense Account: Debit 100.00
+- Input CGST: Debit 9.00
+- Input SGST: Debit 9.00
+- Accounts Payable: Credit 118.00
+
+Ineligible GST Impact:
+- Expense Account: Debit 100.00 (original)
+- 2190 Tax Liability: Debit 7.00 (liability adjustment)
+- Input CGST: Debit 9.00 (normal entry)
+- Input SGST: Debit 9.00 (normal entry)
+- Input SGST: Credit 9.00 (reversal)
+- Input CGST: Credit 9.00 (reversal)
+- Expense Account: Debit 18.00 (GST added to cost)
+
+Net Effect: Expense = 118.00 (100 + 18 GST)
+
+REPORTING IMPACT:
+
+Ineligible GST reflects in GSTR-3B report:
+- Shows under ineligible ITC sections
+- Properly categorized for compliance
+- Table 4(D) - ITC Reversed
+
+INELIGIBLE ITC TYPES:
+
+Blocked ITC 17(5):
+- As per Section 17(5) of CGST Act
+- Specific categories blocked
+- Full GST non-recoverable
+
+Ineligible ITC (POS Rule):
+- Place of Supply rules
+- Location-based restrictions
+- Partial or full blocking
+
+COMMON SCENARIOS:
+
+Personal Vehicle Maintenance:
+- Service: Vehicle repairs
+- GST: Non-recoverable
+- Treatment: Add to expense
+
+Employee Food & Beverages:
+- Service: Catering, restaurants
+- GST: Non-recoverable (with exceptions)
+- Treatment: Add to expense
+
+Club Membership:
+- Service: Health/fitness clubs
+- GST: Non-recoverable
+- Treatment: Add to expense
+
+Personal Insurance:
+- Service: Life insurance
+- GST: Non-recoverable
+- Treatment: Add to expense
+
+KEY FEATURES:
+- Automatic GL reversal entries
+- Increases expense by GST amount
+- Compliance with ITC blocking provisions
+- Proper reporting in GSTR-3B
+
+BEST PRACTICES:
+- Identify blocked ITC scenarios
+- Configure at time of bill entry
+- Review GL impact before posting
+- Maintain documentation
+- Regular compliance review
+- Train AP team on scenarios
+
+IMPORTANT NOTES:
+- Ineligible GST setting affects ITC claiming
+- System automatically reverses input credit
+- Expense increases by GST amount
+- Critical for accurate GSTR-3B reporting
+- Cannot claim ITC once marked ineligible
+- Proper classification essential for compliance

@@ -1,0 +1,222 @@
+LOCATION MASTER CONFIGURATION
+
+Purpose: Define company locations/branches with GSTIN for multi-location GST compliance.
+
+Navigation Path: Setup > Company > Locations > New
+
+CONFIGURATION STEPS:
+
+1. Basic Information:
+   - Name: Location identifier (mandatory)
+   - Parent Location: If hierarchical
+   - Subsidiaries: Select entities
+   - Include Children: Checkbox (includes all child subsidiaries)
+   - Location Type: Classification
+   - Time Zone: Select timezone (e.g., GMT - London)
+   - Latitude: Geo-coordinate
+   - Longitude: Geo-coordinate
+   - Document Number Prefix: For sequential numbering
+
+2. Address Details (Body Level):
+   - Click "Map Edit"
+   - Country: India
+   - Address Lines: Enter address
+   - City: City name
+   - State: Select state
+   - ZIP: Postal code
+
+3. GST Configuration (Body Level - Mandatory):
+   - GSTIN: 15-character GST number
+   - GST State: Select state
+   - GST State Code: Auto-populated
+   - Company Registration: Registration number
+   - Branch ID: Branch identifier
+
+4. Address Subtab GST Details (Critical):
+   - Click "Map Edit" under address
+   - Enter same GST details again:
+     * GSTIN: Same as body level
+     * GST State: Same as body level
+     * GST State Code: Same as body level
+     * Override: Checkbox if needed
+
+5. Additional Fields:
+   - Return Address: Map Edit option
+   - Logo: Upload location logo
+   - Location is Inactive: Checkbox
+   
+   - Click Save
+
+CRITICAL NOTE:
+GST details must be entered in TWO places:
+1. Body level
+2. Address subtab
+
+Both entries are required for proper tax calculation.
+This applies to both new and existing locations.
+
+USAGE: 
+Location selection on transactions determines which GSTIN is used for tax calculation (intra-state vs inter-state).
+
+WHY MULTI-LOCATION SETUP:
+
+Companies with multiple branches need:
+- Separate GSTIN for each state
+- Location-wise compliance
+- Branch-level reporting
+- Accurate tax calculation
+
+Without proper location setup:
+- Wrong GSTIN on invoices
+- Incorrect tax type (CGST/SGST vs IGST)
+- Compliance issues
+- ITC claim problems
+
+LOCATION HIERARCHY:
+
+Parent Location: India Operations
+├── Child Location: Mumbai Branch
+│   └── GSTIN: 27XXXXX (Maharashtra)
+├── Child Location: Delhi Branch
+│   └── GSTIN: 07XXXXX (Delhi)
+└── Child Location: Bangalore Branch
+    └── GSTIN: 29XXXXX (Karnataka)
+
+TAX CALCULATION LOGIC:
+
+Location GSTIN vs Customer GSTIN:
+
+Same State Transaction:
+├── Location: Mumbai (27XXXXX)
+├── Customer: Pune (27YYYYY)
+└── Tax Applied: CGST + SGST (Intra-state)
+
+Different State Transaction:
+├── Location: Mumbai (27XXXXX)
+├── Customer: Delhi (07YYYYY)
+└── Tax Applied: IGST (Inter-state)
+
+CONFIGURATION EXAMPLE:
+
+Location: Mumbai Head Office
+├── Name: Mumbai HO
+├── Parent: India Operations
+├── Subsidiaries: ABC India Pvt Ltd
+├── Time Zone: (GMT+05:30) India Standard Time
+│
+├── Address (Body Level):
+│   ├── Address: 123 Business Park
+│   ├── City: Mumbai
+│   ├── State: Maharashtra
+│   └── ZIP: 400001
+│
+├── GST Configuration (Body Level):
+│   ├── GSTIN: 27AABCA1234C1Z5
+│   ├── GST State: Maharashtra
+│   ├── GST State Code: 27
+│   └── Branch ID: MUM001
+│
+└── Address Subtab:
+    └── GST Details (Must duplicate):
+        ├── GSTIN: 27AABCA1234C1Z5
+        ├── GST State: Maharashtra
+        └── GST State Code: 27
+
+COMMON MISTAKES TO AVOID:
+
+❌ Entering GST details only at body level
+✅ Must enter at both body level AND address subtab
+
+❌ Different GSTIN at body vs address level
+✅ Same GSTIN must be entered in both places
+
+❌ Missing GST state code
+✅ Always configure state code
+
+❌ Wrong state selection
+✅ Verify state matches GSTIN
+
+IMPACT ON TRANSACTIONS:
+
+Invoice Creation:
+1. User selects location: "Mumbai HO"
+2. System fetches location GSTIN: 27XXXXX
+3. Compares with customer GSTIN
+4. Determines tax type:
+   - Same state → CGST + SGST
+   - Different state → IGST
+
+Vendor Bill Creation:
+1. User selects location: "Delhi Branch"
+2. System fetches location GSTIN: 07XXXXX
+3. Compares with vendor GSTIN
+4. Determines ITC eligibility and tax type
+
+LOCATION-WISE REPORTING:
+
+GSTR-1 (Sales):
+- Filed separately for each location
+- Location GSTIN as identifier
+- Branch-wise compliance
+
+GSTR-2 (Purchases):
+- Location-wise input credit
+- Proper ITC attribution
+- Branch-level reporting
+
+GSTR-3B (Summary):
+- Separate filing per location
+- Location-wise tax liability
+- Branch compliance tracking
+
+BEST PRACTICES:
+
+1. Setup Process:
+   - Create location before transactions
+   - Enter GST details in both places
+   - Verify state code auto-population
+   - Test with sample transaction
+
+2. Naming Convention:
+   - Use clear location identifiers
+   - Include city/state in name
+   - Maintain hierarchy if needed
+
+3. Maintenance:
+   - Regular GSTIN validation
+   - Update when branches open/close
+   - Deactivate instead of deleting
+   - Document location changes
+
+4. User Training:
+   - Train teams on location selection
+   - Explain impact on tax calculation
+   - Provide location selection guide
+   - Regular refresher sessions
+
+TROUBLESHOOTING:
+
+Issue: Tax calculating incorrectly
+Solution: Verify GST details at both body and address level
+
+Issue: Location GSTIN not appearing on invoice
+Solution: Check address subtab GST configuration
+
+Issue: Wrong tax type (IGST instead of CGST/SGST)
+Solution: Verify location and customer state codes match
+
+Issue: Unable to file GSTR-1 for location
+Solution: Ensure location GSTIN is properly configured
+
+IMPORTANT NOTES:
+
+- Location configuration is critical for GST compliance
+- GST details required at TWO levels (body + address)
+- Location determines which GSTIN appears on invoices
+- Affects tax type calculation (intra vs inter-state)
+- Separate GSTR filing needed for each location
+- Changes affect future transactions immediately
+- Cannot change GSTIN on existing transactions
+- Regular validation recommended
+- Deactivate old locations rather than deleting
+- Maintain audit trail of location changes

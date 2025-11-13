@@ -1,0 +1,29 @@
+FINANCIAL YEAR MASTER SETUP
+
+Purpose: One-time annual setup activity for defining financial year parameters.
+
+Navigation Path: AG Taxation > Master Data > Financial Year Master > New
+
+REQUIRED FIELDS:
+
+1. Name: Financial year identifier (e.g., FY202526)
+2. From Date: Start date (e.g., 4/1/2025)
+3. To Date: End date (e.g., 3/31/2026)
+4. FY Code: 6-digit code (e.g., 202526)
+5. Assessment Code: Assessment year code (e.g., 202627)
+
+KEY NOTES:
+
+- This is a mandatory one-time setup that must be created annually
+- The inactive checkbox allows deactivation of old financial years
+- Must be configured before processing any transactions for the new financial year
+- FY Code is used in various reports and compliance filings
+- Assessment Code is required for tax filing purposes
+
+BEST PRACTICES:
+
+- Create the financial year at the beginning of each fiscal year
+- Deactivate old financial years after year-end closing
+- Maintain consistent naming convention (e.g., FY202526, FY202627)
+- Verify dates align with your company's fiscal calendar
+- Keep previous years' records for audit and compliance purposes

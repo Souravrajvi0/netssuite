@@ -1,0 +1,193 @@
+CUSTOMER MASTER CREATION
+
+Purpose: Set up customer master records with GST and PAN details for invoicing.
+
+Navigation Path: List > Relationships > Customers > New
+
+SETUP STEPS:
+
+1. Select Custom Form:
+   - Mandatory: Choose "India - Customer Form"
+   - Required for AG Taxation transactions
+
+2. Primary Information:
+   - Company Name (mandatory)
+   - Customer ID (auto-generated)
+   - Type: Company/Individual
+   - Status: Customer-Closed Won
+   - Sales Rep
+   - Category
+   - Comments
+
+3. Add Address (under Address tab):
+   - Click pencil icon to edit
+   
+   Mandatory fields:
+   - Country: India
+   - Address 1 & 2
+   - City
+   - State: Select from dropdown
+   - ZIP: Postal code
+   
+   GST Details:
+   - GSTIN: 15-character GST number
+   - GST State: Select state (e.g., Maharashtra)
+   - GST State Code: Auto-populated (e.g., 27)
+   - Set as Default Shipping/Billing address
+   
+   - Click OK, then Add
+
+4. AGTAX Subtab (mandatory for India transactions):
+   - Customer/Master GSTIN: Primary GST number
+   - PAN No: If available
+   - GST Reg Type: Select from:
+     * Regular
+     * Unregistered
+     * Overseas
+     * SEZ
+   
+   - Click Save
+
+IMPORTANT NOTE: Multiple addresses can be added following the same process.
+
+GSTIN FORMAT:
+
+Format: 15 characters
+Structure: 22AAAAA0000A1Z5
+
+Example: 27AABCT1234C1Z5
+├── 27: State Code (Maharashtra)
+├── AABCT1234C: PAN of business
+├── 1: Entity number
+├── Z: Default 'Z'
+└── 5: Check digit
+
+STATE CODES (Common):
+
+- 01: Jammu & Kashmir
+- 06: Haryana
+- 07: Delhi
+- 09: Uttar Pradesh
+- 10: Bihar
+- 19: West Bengal
+- 24: Gujarat
+- 27: Maharashtra
+- 29: Karnataka
+- 32: Kerala
+- 33: Tamil Nadu
+- 36: Telangana
+
+GST REGISTRATION TYPES:
+
+Regular:
+- Normal registered taxpayers
+- Can charge and collect GST
+- Can claim ITC
+- Must file returns
+
+Unregistered:
+- Below threshold limit
+- Cannot charge GST
+- Cannot claim ITC
+- Limited compliance
+
+Overseas:
+- Export customers
+- Zero-rated supplies
+- IGST @ 0% or LUT
+- Export documentation needed
+
+SEZ (Special Economic Zone):
+- Zero-rated supplies
+- Special tax treatment
+- Additional documentation
+- Export benefits
+
+CUSTOMER ADDRESS CONFIGURATION:
+
+A customer can have multiple addresses:
+- Billing Address: For invoice generation
+- Shipping Address: For delivery
+- Different GSTINs for different locations
+
+For each address:
+1. Click "Addresses" subtab
+2. Click "Add"
+3. Fill address details
+4. Enter location-specific GSTIN
+5. Set as default if needed
+6. Save
+
+TRANSACTION IMPACT:
+
+When creating invoice:
+- Customer GSTIN determines tax type (CGST/SGST vs IGST)
+- If customer state = company location state: Intra-state (CGST/SGST)
+- If customer state ≠ company location state: Inter-state (IGST)
+- Unregistered customers: Tax still applicable, but B2C reporting
+- Export customers: Zero-rated or LUT
+
+EXAMPLE CONFIGURATIONS:
+
+Regular Customer - Same State:
+├── Name: ABC Pvt Ltd
+├── GSTIN: 27AABCT1234C1Z5 (Maharashtra)
+├── GST State: Maharashtra (27)
+├── Type: Regular
+└── Result on Invoice: CGST/SGST applied
+
+Regular Customer - Different State:
+├── Name: XYZ Industries
+├── GSTIN: 29AABXY5678D1Z3 (Karnataka)
+├── GST State: Karnataka (29)
+├── Type: Regular
+└── Result on Invoice: IGST applied
+
+Unregistered Customer:
+├── Name: Small Retailer
+├── GSTIN: (blank)
+├── GST State: Maharashtra (27)
+├── Type: Unregistered
+└── Result on Invoice: Tax applied, B2C reporting
+
+Export Customer:
+├── Name: Foreign Corp
+├── GSTIN: (blank or URP)
+├── GST State: (blank)
+├── Type: Overseas
+└── Result on Invoice: IGST @ 0% or with LUT
+
+BEST PRACTICES:
+
+- Verify GSTIN on government portal before entry
+- Maintain accurate state codes
+- Configure all customer locations if multiple
+- Keep PAN records for reference
+- Regular data cleansing
+- Document customer categories
+- Train AR team on customer setup
+- Periodic GSTIN validation
+
+VALIDATION CHECKS:
+
+System validates:
+- GSTIN format (15 characters)
+- State code matches GST state
+- PAN embedded in GSTIN (characters 3-12)
+
+Common errors:
+- Wrong GSTIN format
+- State code mismatch
+- Incorrect registration type
+- Missing mandatory fields
+
+IMPORTANT NOTES:
+
+- India - Customer Form is mandatory for AG Taxation
+- GSTIN determines tax calculation on invoices
+- Multiple addresses supported for multi-location customers
+- Registration type affects reporting (B2B vs B2C)
+- Export customers need special documentation
+- GSTIN can be verified on govt portal: gst.gov.in
+- Changes affect future transactions only
+- Regular validation recommended for compliance

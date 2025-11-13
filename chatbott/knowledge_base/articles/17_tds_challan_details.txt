@@ -1,0 +1,88 @@
+TDS CHALLAN DETAILS
+
+Purpose: View, manage, and verify TDS challan records.
+
+Navigation Path: AG Taxation > TDS Payment > TDS Challan
+
+CHALLAN RECORD CONTAINS:
+- Internal ID
+- Date
+- Challan Number
+- Cheque Number
+- Total Amount
+- TDS Type(s)
+- TDS Section
+- Assessee Code
+- Payment Date
+
+DRILL-DOWN CAPABILITIES:
+- Click on any challan to view details
+- Click "Check #" field link to view payment record
+- View associated vendor bills
+
+INFORMATION DISPLAYED:
+- Subsidiary details
+- Location
+- Department
+- Bank information with balance
+- BSR Code
+- Tax agency
+- TDS account breakdown
+- Vendor-wise bill details with amounts
+
+KEY FEATURE: Complete audit trail from bill to payment to challan.
+
+CHALLAN DETAIL VIEW:
+
+Header Information:
+- Challan number and date
+- Payment check number
+- Total TDS amount
+- TDS section
+- Assessee type
+
+Payment Details:
+- Bank account used
+- BSR Code
+- Payment date
+- Tax agency
+
+Associated Bills:
+- Vendor name
+- Bill number and date
+- Bill amount
+- TDS deducted
+- TDS section
+
+VERIFICATION CHECKLIST:
+✓ Challan number matches bank statement
+✓ BSR Code correct
+✓ All bills included
+✓ TDS amounts accurate
+✓ Payment date correct
+✓ Section codes proper
+
+USING CHALLAN DETAILS:
+
+For TDS Returns:
+- Challan details required for filing
+- Extract challan number, date, amount
+- Use in Form 26Q/27Q/24Q
+
+For Reconciliation:
+- Match challan with bank statement
+- Verify all bills covered
+- Check TDS calculations
+- Confirm payment posting
+
+For Audit:
+- Complete documentation
+- Bill-to-payment linkage
+- Vendor-wise breakdown
+- Section-wise summary
+
+IMPORTANT NOTES:
+- Challan cannot be modified after creation
+- Keep records for 7 years minimum
+- Required for TDS return filing
+- Critical for vendor TDS certificates

@@ -1,0 +1,135 @@
+VENDOR BILL CREATION (WITH TDS/RCM)
+
+Purpose: Record vendor bills with GST, TDS, and RCM calculations.
+
+Navigation Path: Transactions > Payables > Enter Bills
+
+BILL CREATION STEPS:
+
+1. Form Selection:
+   Custom Form: "India - Vendor Bill" (mandatory)
+
+2. Header Information:
+   - Vendor: Select vendor
+   - Vendor Invoice No: Vendor's bill number
+   - Account: GL account (if not using items)
+   - Amount: Bill amount
+   - Accounting Date: Bill date (mandatory)
+   - Document Date-Vendor Invoice Date: Vendor's date (mandatory)
+   - Posting Period: Auto-selected
+   - Due Date: Payment due date
+   - Terms: Payment terms
+   - Currency: US Dollar / INR
+   - Exchange Rate: If applicable
+   - Approval Status: Pending Approval
+   - Next Approver: Select approver
+
+3. Classification:
+   - Subsidiary: Select entity
+   - Class: Optional
+   - Location: Critical - Fetches company GSTIN
+
+4. Line Item Entry (Expenses and Items tab):
+   - Account/Item: Select
+   - Vendor Name: Optional override
+   - HSN/SAC Code: Select (triggers tax calculation)
+   - Quantity: Enter quantity
+   - Description: Item description
+   - Rate: Unit price
+   - Amount: Extended amount
+   - Tax Code: Auto-populated
+   - Tax Rate: Percentage
+   - Tax Amount: Calculated
+   - Gross Amount: Total
+
+5. Mandatory Line Fields (scroll right):
+   - GST Unit: Unit of measurement
+   - Nature of Item: Goods/Services
+   - GST Unit Code: Code
+   
+   Note: Pre-map on item/account master
+
+TDS APPLICATION ON VENDOR BILL:
+
+Steps to Apply TDS:
+1. Scroll right on expense/item line
+2. Check "Apply TDS" checkbox
+
+System automatically:
+- Calculates TDS amount (e.g., 10% of base)
+- Adds TDS line with negative amount
+- Populates TDS details:
+  * TDS Relation
+  * TDS Type
+  * TDS Rate
+  * TDS Amount
+  * Line TDS Total
+
+TDS Line Details:
+- Item: "TDS Payable"
+- Amount: Negative (deduction)
+- Tax Code: GST @0%
+- TDS fields populated
+
+To Remove TDS:
+- Scroll right to TDS line
+- Uncheck TDS line checkbox
+- Click Remove on TDS line
+
+IMPORTANT TDS NOTE:
+System validates TDS type against vendor master. If TDS type not mapped on vendor, system shows error: "This is not valid TDS Code for This Vendor". Must add TDS type to vendor master before applying.
+
+RCM (REVERSE CHARGE MECHANISM) APPLICATION:
+
+Steps to Apply RCM:
+1. Scroll right on expense/item line
+2. Check "Apply RCM" checkbox
+3. Click Save
+
+System Creates RCM Lines Automatically:
+- Line 1: Original expense (Tax @ 0%)
+- Line 2: IGST Purchase (positive tax amount)
+- Line 3: IGST Payable (negative tax amount, offsets line 2)
+
+RCM Line Details:
+Shows in RCM columns:
+- RCM?
+- RCM Line
+- RCM Processed
+- RCM Applicable
+
+To Remove RCM:
+- Scroll right to RCM lines
+- Uncheck RCM line checkboxes
+- Click Remove on each RCM line
+
+AGTAX SUBTAB (auto-populated after save):
+- Amount in Words
+- Business Type
+- CGST Tax Total
+- SGST Tax Total
+- IGST Tax Total
+- TDS Amount (if applied)
+- Place of Supply
+- GST Type
+- GST Reg Type
+- Location GSTIN
+- Master GSTIN
+- Pre GST checkbox
+
+MULTIPLE BILLING ADDRESSES:
+If vendor has multiple locations:
+- Go to Billing subtab
+- Select appropriate billing address from dropdown
+
+KEY FEATURES:
+- Tax auto-calculated based on HSN/SAC and location
+- TDS validated against vendor master
+- RCM creates offsetting entries automatically
+
+IMPORTANT NOTES:
+- Location selection critical for correct GSTIN
+- TDS type must be pre-configured on vendor
+- RCM applicable for specific scenarios only
+- System validates all mandatory fields
+- Multiple approvers supported

@@ -1,0 +1,168 @@
+E-INVOICE (IRN GENERATION & CANCELLATION)
+
+Purpose: Generate IRN (Invoice Reference Number) and QR code for GST compliance through government E-invoice portal.
+
+Navigation Path: Direct from saved invoice
+
+IRN GENERATION PROCESS:
+
+1. After Saving Invoice:
+   - "Generate IRN" button appears on invoice
+   - Click button
+
+2. System Process:
+   - Invoice details sent to E-invoice portal
+   - IRN generated
+   - QR code created
+   - Details returned to NetSuite (within seconds)
+
+3. IRN Details Populated (AG-E-Invoice subtab):
+   - Date of Acknowledgment
+   - Acknowledgment Number
+   - IRN Identification Number
+   - Raw QR Code
+   - Encoded Signed QR Code
+   - Signed QR Code
+   - Status: ACT (Active)
+
+IRN CANCELLATION PROCESS:
+
+Time Constraint: IRN can only be cancelled within 24 hours of generation
+
+Cancellation Steps:
+1. Go to AG-E-Invoice subtab
+2. Fill mandatory fields:
+   - IRN Cancel Reason: Select from dropdown
+   - IRN Cancellation Remark: Enter explanation
+3. Save the invoice
+4. Click "Cancel IRN" button
+
+After Cancellation:
+- IRN Cancel Date Time: Auto-populated on AG-E-Invoice subtab
+- Status updated
+
+KEY NOTES:
+- E-invoicing is mandatory for registered businesses above threshold
+- IRN cannot be regenerated once cancelled
+- 24-hour cancellation window is strictly enforced
+
+E-INVOICING APPLICABILITY:
+
+Mandatory for:
+- B2B transactions
+- Turnover > ₹5 crore (threshold may change)
+- Registered taxpayers
+- Exports
+
+Not required for:
+- B2C transactions (some exceptions)
+- Below threshold businesses
+- Exempted categories
+
+IRN STRUCTURE:
+
+64-character alphanumeric string
+Example: 3dab58f58bd5f9a622f0747fb1b5bbd5c43c9b3c63d42b24e4e8e9bcadc27f20
+
+Components:
+- Invoice details hash
+- Unique identifier
+- Government validated
+
+QR CODE CONTENTS:
+
+Contains:
+- IRN
+- Acknowledgment Number
+- Document details
+- Supplier GSTIN
+- Buyer GSTIN
+- Invoice value
+- Digital signature
+
+Benefits:
+- Quick verification
+- Anti-counterfeiting
+- Easy authentication
+- Mobile scanning
+
+E-INVOICE WORKFLOW:
+
+1. Create invoice in NetSuite
+2. Save invoice
+3. Click "Generate IRN"
+4. System connects to IRP (Invoice Registration Portal)
+5. IRP validates invoice
+6. IRP generates IRN and QR code
+7. Details returned to NetSuite
+8. IRN and QR code populate on invoice
+9. Invoice status: E-invoice generated
+
+CANCELLATION REASONS:
+
+Common reasons dropdown:
+- Duplicate invoice
+- Data entry error
+- Order cancelled
+- Return/credit note
+- Others
+
+IMPORTANT: Must provide detailed remark explaining cancellation
+
+ERROR SCENARIOS:
+
+Common IRN generation errors:
+- Invalid GSTIN format
+- Duplicate invoice number
+- Missing mandatory fields
+- HSN/SAC code issues
+- Network connectivity problems
+
+Resolution:
+- Fix data issues
+- Retry IRN generation
+- Contact IRP support if persists
+
+BEST PRACTICES:
+
+Before IRN Generation:
+- Verify all invoice details
+- Check GSTIN accuracy
+- Ensure HSN/SAC codes correct
+- Validate amounts
+- Review customer information
+
+After IRN Generation:
+- Save IRN for records
+- Print invoice with QR code
+- Share with customer
+- Maintain e-invoice register
+
+Cancellation:
+- Only cancel if absolutely necessary
+- Within 24-hour window
+- Proper documentation of reason
+- Audit trail maintenance
+
+COMPLIANCE REQUIREMENTS:
+
+E-Invoice Register:
+- Maintain monthly register
+- All IRNs with dates
+- Cancellations tracked
+- Available for audit
+
+Return Filing:
+- Auto-populated in GSTR-1
+- IRN-based reporting
+- Reduced data entry
+- Better accuracy
+
+IMPORTANT NOTES:
+- IRN generation is irreversible after 24 hours
+- QR code mandatory on printed invoice
+- System validates before sending to IRP
+- Failed generation requires data correction
+- Cancelled IRNs cannot be reused
+- Maintain backup of all IRN details
+- Regular reconciliation recommended

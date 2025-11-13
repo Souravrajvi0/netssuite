@@ -1,0 +1,59 @@
+TAX CODES CONFIGURATION (CGST/SGST/IGST)
+
+Purpose: Configure individual tax components (CGST, SGST, IGST) for GST calculations.
+
+Navigation Path: Setup > Accounting > Tax Codes > New
+
+CONFIGURATION STEPS:
+
+1. Select Country: India
+
+2. Fill mandatory fields (marked in red):
+   - Tax Code name (e.g., "SGST @ 9%")
+   - Description
+   - Tax Agency: Default Tax Agency IN
+   - Tax Type: Select appropriate type (SGST, CGST, IGST)
+   - Rate: Percentage (e.g., 9.0%)
+   - Purchase Tax Account: Input account (e.g., "Input SGST")
+   - Sales Tax Account: Output account (e.g., "Output SGST")
+   - Available On: Both (for both purchase and sales)
+
+KEY FIELDS:
+
+- Reverse Charge Code: For RCM applicability
+- Effective From/Valid Until dates: For time-bound rates
+- Subsidiaries selection: Multi-entity configuration
+- Various checkboxes for special scenarios
+
+TAX TYPES EXPLAINED:
+
+CGST (Central GST):
+- Central government component of GST
+- Applicable on intra-state transactions
+- Rate typically 9% (for 18% total with SGST)
+
+SGST (State GST):
+- State government component of GST
+- Applicable on intra-state transactions
+- Rate typically 9% (for 18% total with CGST)
+
+IGST (Integrated GST):
+- Combined central + state component
+- Applicable on inter-state transactions
+- Rate typically 18% (combines CGST + SGST)
+
+COMMON TAX RATES:
+
+- 0%: Exempted goods/services
+- 5%: Essential goods
+- 12%: Standard goods
+- 18%: Most goods and services
+- 28%: Luxury goods
+
+IMPORTANT NOTES:
+
+- Tax codes must be created before setting up tax groups
+- Use consistent naming convention for easy identification
+- Configure both purchase and sales accounts for complete setup
+- Verify tax agency is correctly mapped
+- Test with sample transactions before going live

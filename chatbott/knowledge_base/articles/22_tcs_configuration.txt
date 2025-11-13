@@ -1,0 +1,137 @@
+TCS CONFIGURATION & APPLICATION
+
+Purpose: Configure and apply TCS (Tax Collected at Source) as per Income Tax Act provisions on sales transactions.
+
+Navigation Path: AG Taxation > Master Data > AG TCS TAX RULE > New
+
+TCS RULE CREATION FIELDS:
+
+Basic Information:
+- Name: Rule identifier (mandatory)
+- Description: Optional explanation
+- TCS Section: IT Act section (e.g., 206C)
+- TCS Subsection: Specific subsection (e.g., 206C(1H))
+
+Rate Configuration:
+- Threshold Amount: Transaction limit triggering TCS
+- Rate: Standard TCS percentage (e.g., 5%)
+- Annual Threshold: Checkbox (if threshold is annual per customer per section)
+
+Challan Details:
+- Challan Code: Auto-populated based on subsection
+- Select applicable code from dropdown
+
+Accounting:
+- TCS Payable Item: Select GL item for TCS liability
+
+206CCA Higher Rate Provision:
+- 206CCA Higher Rate: Percentage
+- Applicability:
+  * When customer has NOT filed ITR for previous year
+  * When customer does NOT have PAN
+
+Rate Logic:
+- If 206CCA rate > (2 × Normal rate): Use 206CCA rate
+- If 206CCA rate < (2 × Normal rate): Use (2 × Normal rate)
+
+Click Save
+
+CUSTOMER CONFIGURATION FOR TCS:
+
+Navigation Path: List > Relationships > Customers > [Select Customer]
+
+AGTAX Subtab Configuration:
+
+PAN Details:
+- PAN Availability: Select "Yes" or "No"
+- PAN No: Enter if available
+
+206CCA Configuration:
+- 206CCA Checkbox:
+  * Check: If customer has NOT filed ITR in previous year
+  * Uncheck: If customer has filed ITR in previous year
+
+ITEM-LEVEL TCS MAPPING:
+
+Purpose: Auto-apply TCS when specific items are selected on invoices.
+
+Navigation Path: List > Accounting > Items > [Select Item]
+
+Configuration:
+- Map TCS Type to item on item master
+- When item is selected on invoice, TCS Type auto-populates
+
+INVOICE CREATION WITH TCS:
+
+Navigation Path: Transactions > Sales > Create Invoices
+
+Steps:
+1. Create Standard Invoice:
+   - Select "India - Service Invoice" form
+   - Enter customer, date, location
+   - Add item lines
+
+2. Apply TCS (scroll right on item line):
+   - TCS Type column: Select TCS type from dropdown
+   - OR: If item has TCS mapped, it auto-appears
+   - Click Save
+
+3. System Generates TCS Line:
+   Additional line added with:
+   - Item: TCS Payable
+   - Amount: Calculated TCS amount
+   - TCS Type: Selected type
+   - TCS Rate: Applicable rate
+   - TCS Processed: Checkbox (checked)
+
+REMOVE TCS FROM TRANSACTION:
+
+Steps:
+- Scroll right on invoice lines
+- Uncheck "TCS Processed" checkbox
+- Clear the TCS Type field
+- Delete the TCS line
+- Click Save
+
+UPDATE TCS TYPE:
+
+Steps:
+- Select new TCS Type from dropdown
+- Uncheck "TCS Processed" checkbox
+- Click Save
+- System recalculates with new rate
+
+KEY FEATURES:
+- Automatic TCS calculation
+- Higher rates for non-PAN/non-ITR filers
+- Annual threshold tracking per customer
+- Item-level TCS mapping for automation
+
+COMMON TCS SECTIONS:
+
+Section 206C(1): Sale of Goods
+- Scrap, minerals, etc.
+- Rate: 1%
+- Threshold: ₹50 lakhs
+
+Section 206C(1F): Sale of Motor Vehicle
+- Vehicles > ₹10 lakhs
+- Rate: 1%
+- Per transaction
+
+Section 206C(1G): Sale of Goods
+- Turnover > ₹10 crores
+- Rate: 0.1%
+- Threshold: ₹50 lakhs
+
+Section 206C(1H): Remittances under LRS
+- Foreign remittances
+- Rate: 5% (above ₹7 lakhs)
+
+IMPORTANT NOTES:
+- TCS Rules must be created before application
+- Customer PAN affects rate
+- ITR filing status affects rate
+- Annual thresholds per customer per section
+- System tracks cumulative amounts
+- TCS certificates to be issued

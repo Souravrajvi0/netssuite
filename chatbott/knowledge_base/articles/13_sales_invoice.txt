@@ -1,0 +1,77 @@
+SALES INVOICE CREATION
+
+Purpose: Create sales invoices with automatic GST calculation and compliance.
+
+Navigation Path: Transactions > Sales > Create Invoices
+
+INVOICE CREATION STEPS:
+
+1. Form Selection:
+   Custom Form: Select "India - Service Invoice" (mandatory)
+
+2. Header Information:
+   - Customer: Select customer
+   - Date: Invoice date
+   - Posting Period: Auto-populated
+   - Due Date: Payment due date
+   - PO #: Customer PO reference
+   - Memo: Additional notes
+
+3. Classification Section:
+   - Subsidiary: Select entity
+   - Class: Optional classification
+   - Location: Critical - Select company location to fetch GSTIN
+
+4. Line Item Entry:
+   - Item: Select from list
+   - HSN/SAC Code: Select code (triggers tax calculation)
+   - Quantity: Enter quantity
+   - Rate: Unit price
+   - Tax Code: Auto-populated based on HSN/SAC and location
+
+5. Mandatory Line-Level Fields (scroll right):
+   - GST Unit: Unit of measurement
+   - Nature of Item: Classification (Goods/Services)
+   - GST Unit Code: Code for unit
+   
+   Note: These can be pre-mapped on item master
+
+6. Summary Section:
+   - Subtotal
+   - Tax Total
+   - Total Amount
+
+7. AGTAX Subtab (auto-populated after save):
+   - Amount in words
+   - Business Type
+   - CGST/SGST/IGST totals
+   - Place of Supply
+   - GST Type
+   - GST Reg Type
+   - Location GSTIN
+   - Master GSTIN
+
+KEY FEATURE: Tax codes populate automatically based on HSN/SAC code rate and location GSTIN.
+
+TAX CALCULATION LOGIC:
+
+Intra-State Transaction (Same state):
+Location: Maharashtra (27)
+Customer: Maharashtra (27)
+Result: CGST 9% + SGST 9% = 18%
+
+Inter-State Transaction (Different states):
+Location: Maharashtra (27)
+Customer: Karnataka (29)
+Result: IGST 18%
+
+Export Transaction:
+Location: Maharashtra (27)
+Customer: Overseas
+Result: IGST 0% (with LUT) or 18% (refundable)
+
+IMPORTANT NOTES:
+- Location selection is critical for correct GSTIN
+- HSN/SAC code triggers tax rate selection
+- System auto-determines intra-state vs inter-state
+- All mandatory fields must be filled

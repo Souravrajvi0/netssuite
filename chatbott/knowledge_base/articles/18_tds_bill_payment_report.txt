@@ -1,0 +1,102 @@
+TDS BILL PAYMENT REPORT
+
+Purpose: Generate filtered reports of TDS payments by date and type.
+
+Navigation Path: AG Taxation > TDS Payment > TDS Bill Payment Report
+
+FILTER OPTIONS:
+- Date range (From/To)
+- TDS Type dropdown (with multiple types available)
+- Style (Normal view)
+
+REPORT COLUMNS:
+- Edit/View links
+- Internal ID
+- Bill Date
+- TDS Payable Date
+- TDS Account
+- TDS Type
+- Vendor name
+- Bill Number
+- Bill Amount
+- TDS Rate %
+- TDS Amount
+- Bank Name
+- Tax Agency
+- BSR Code
+- Assessee Code
+
+USAGE: Useful for reconciliation and verification before filing returns.
+
+REPORT FEATURES:
+
+Filtering:
+- By date range
+- By TDS type (194C, 194J, 194H, etc.)
+- By vendor
+- By section
+
+Columns Displayed:
+- Transaction details
+- Payment information
+- TDS calculations
+- Bank and challan details
+
+Export Options:
+- Excel format
+- PDF format
+- CSV format
+
+COMMON USE CASES:
+
+Pre-Filing Verification:
+- Review all TDS deductions for quarter
+- Verify rates applied
+- Check vendor PAN details
+- Confirm challan payments
+
+Reconciliation:
+- Match with TDS challans
+- Verify with vendor bills
+- Cross-check with GL
+- Confirm bank payments
+
+Vendor Communication:
+- Extract vendor-wise TDS
+- Prepare TDS certificates
+- Share deduction details
+- Resolve queries
+
+Month-End Review:
+- Total TDS deducted
+- Section-wise breakdown
+- Pending payments
+- Threshold monitoring
+
+REPORT ANALYSIS:
+
+By TDS Section:
+- 194C: Contractor payments
+- 194J: Professional fees
+- 194H: Commission
+- 194I: Rent
+- Others
+
+By Vendor:
+- Total deductions per vendor
+- Payment frequency
+- Average deduction amount
+- Threshold status
+
+By Time Period:
+- Monthly trends
+- Quarterly summaries
+- Annual aggregation
+- Year-over-year comparison
+
+IMPORTANT NOTES:
+- Run report before quarterly filing
+- Verify data accuracy
+- Export for records
+- Use for TDS certificates
+- Essential for compliance

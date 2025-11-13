@@ -1,0 +1,160 @@
+ACCOUNT MASTER GST SETUP
+
+Purpose: Set up GL accounts with GST parameters.
+
+Navigation Path: List > Accounting > Accounts > New
+
+GST FIELDS AT BODY LEVEL:
+
+1. Nature of Item: Classification (Goods/Services)
+2. HSN/SAC Code: Applicable code
+3. Ineligible GST: For blocked ITC scenarios
+4. RCM Applicable: Reverse Charge Mechanism flag
+
+USAGE: 
+These details auto-populate when the account is used in transactions.
+
+ACCOUNT TYPES AND GST CONFIGURATION:
+
+Expense Accounts:
+- Used on vendor bills
+- Configure for common expenses
+- RCM flag for applicable scenarios
+- Ineligible GST for blocked ITC
+
+Income Accounts:
+- Used on customer invoices
+- HSN/SAC for revenue classification
+- Nature of item configuration
+
+NATURE OF ITEM:
+
+Goods:
+- Tangible products
+- Physical inventory
+- Asset purchases
+
+Services:
+- Intangible offerings
+- Professional services
+- Consulting, support
+
+INELIGIBLE GST SCENARIOS:
+
+As per Section 17(5) of CGST Act, ITC blocked for:
+- Motor vehicles (personal use)
+- Food and beverages
+- Outdoor catering
+- Travel benefits
+- Membership fees (clubs, health centers)
+- Personal expenses
+
+When Ineligible GST is checked:
+- GST amount added to expense
+- No ITC claim available
+- Shows in GSTR-3B ineligible section
+
+RCM APPLICABLE:
+
+Reverse Charge Mechanism scenarios:
+- Services from unregistered vendors
+- Legal services
+- Director fees
+- Import of services
+- GTA services
+- Security services
+
+When RCM is checked:
+- Special tax treatment applied
+- Buyer liable to pay tax
+- No tax collected from vendor
+
+CONFIGURATION STEPS:
+
+1. Open Account Record:
+   - Navigate to: List > Accounting > Accounts
+   - Select existing or create new
+
+2. Configure GST Fields:
+   - Nature of Item: Select appropriate type
+   - HSN/SAC Code: Enter if applicable
+   - Ineligible GST: Check if ITC blocked
+   - RCM Applicable: Check if reverse charge applies
+
+3. Save Account:
+   - Click Save
+   - Test on sample transaction
+
+COMMON ACCOUNT CONFIGURATIONS:
+
+Travel Expense Account:
+├── Nature: Services
+├── HSN/SAC: 996411
+├── Ineligible GST: Checked (if personal travel)
+└── RCM Applicable: Unchecked
+
+Professional Fees Account:
+├── Nature: Services
+├── HSN/SAC: 998313
+├── Ineligible GST: Unchecked
+└── RCM Applicable: May be checked (if from unregistered)
+
+Rent Expense Account:
+├── Nature: Services
+├── HSN/SAC: 997212
+├── Ineligible GST: Unchecked
+└── RCM Applicable: May be checked
+
+BENEFITS OF ACCOUNT-LEVEL GST SETUP:
+
+1. Automation: GST details pre-fill on bills
+2. Compliance: Ensures proper ITC treatment
+3. Accuracy: Correct RCM application
+4. Speed: Faster transaction processing
+5. Reporting: Accurate GSTR-2 and GSTR-3B
+
+EXAMPLE SCENARIOS:
+
+Scenario 1 - Professional Services (Registered Vendor):
+- Account: Professional Fees
+- Nature: Services
+- SAC: 998313
+- Ineligible GST: No
+- RCM: No
+- Result: Normal GST, ITC available
+
+Scenario 2 - Professional Services (Unregistered Vendor):
+- Account: Professional Fees
+- Nature: Services
+- SAC: 998313
+- Ineligible GST: No
+- RCM: Yes
+- Result: RCM applied, buyer pays tax
+
+Scenario 3 - Personal Vehicle Expense:
+- Account: Vehicle Maintenance
+- Nature: Services
+- SAC: 998719
+- Ineligible GST: Yes
+- RCM: No
+- Result: GST added to expense, no ITC
+
+BEST PRACTICES:
+
+- Configure GST fields on commonly used accounts
+- Review account setup periodically
+- Update when GST rules change
+- Document account GST configurations
+- Train AP/AR teams on proper account selection
+- Test accounts with sample transactions
+- Maintain list of RCM applicable accounts
+
+IMPORTANT NOTES:
+
+- Account-level setup is optional but recommended
+- Can override on individual transactions if needed
+- Ineligible GST setting affects ITC claiming
+- RCM flag triggers special tax calculation
+- Proper setup ensures compliance
+- Critical for accurate GSTR-2 and GSTR-3B reporting
+- Changes don't affect past transactions

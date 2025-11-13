@@ -1,0 +1,124 @@
+TDS MASTER CONFIGURATION
+
+Purpose: Configure Tax Deducted at Source (TDS) rules and rates.
+
+Navigation Path: AG Taxation > Master Data > TDS Master > New
+
+MANDATORY FIELDS:
+
+1. Name: TDS type description (e.g., "Payment to Contractors (Company)")
+2. Section: IT Act section (e.g., 194C)
+3. TDS Type: Category
+4. Rate: Standard rate (e.g., 2.0%)
+5. TDS Account: Liability account (e.g., "2190 Tax Liability")
+6. TDS Item: Payable item (e.g., "TDS Payable")
+7. TDS Threshold: Single transaction limit (e.g., 30,000)
+8. Cumulative Threshold: Annual limit
+9. Assessee Code: Company/Individual
+10. Empty PAN: Higher rate for non-PAN holders (e.g., 20.0%)
+11. Payment Code: Section code
+12. 206AB Rate: Special rate for non-filers
+13. 206AB Higher Rate: Increased rate (e.g., 5.0%)
+
+KEY FEATURE: 
+All parameters defined here auto-populate on vendor bills when TDS is applied.
+
+COMMON TDS SECTIONS:
+
+Section 194C - Payment to Contractors:
+- Company: 2%
+- Individual/HUF: 1%
+- Threshold: ₹30,000 (single), ₹1,00,000 (annual)
+
+Section 194J - Professional Services:
+- Rate: 10%
+- Threshold: ₹30,000
+- Applies to: Technical, professional, royalty
+
+Section 194H - Commission:
+- Rate: 5%
+- Threshold: ₹15,000
+- Applies to: Commission/brokerage
+
+Section 194I - Rent:
+- Plant & Machinery: 2%
+- Land & Building: 10%
+- Threshold: ₹2,40,000
+
+Section 194A - Interest:
+- Banks: 10%
+- Others: 10%
+- Threshold: ₹40,000 (others), ₹50,000 (senior citizens)
+
+Section 194Q - Purchase of Goods:
+- Rate: 0.1%
+- Threshold: ₹50,00,000 (annual)
+
+THRESHOLD TYPES:
+
+Single Transaction Threshold:
+- Applied per transaction
+- If single bill exceeds limit, TDS applies
+
+Cumulative Threshold:
+- Applied annually per vendor
+- Tracks total payments across financial year
+- TDS applies when cumulative crosses limit
+
+SPECIAL PROVISIONS:
+
+Empty PAN Rate:
+- Higher rate when vendor has no PAN
+- Typically 20% for most sections
+- Configured in "Empty PAN" field
+
+206AB - Non-filer Provisions:
+- Higher rate for non-ITR filers
+- Rate: Higher of (normal × 2) or specified rate
+- Applies if vendor didn't file ITR in last 2 years
+
+ASSESSEE CODE:
+
+Company (C):
+- Registered companies
+- Rate may differ from individuals
+
+Individual/HUF (I):
+- Individuals and Hindu Undivided Families
+- Generally lower rates for contractors
+
+CONFIGURATION EXAMPLE:
+
+TDS Master: Payment to Contractors (Company)
+├── Name: Payment to Contractors (Company)
+├── Section: 194C
+├── TDS Type: Contractor
+├── Rate: 2.0%
+├── TDS Account: 2190 TDS Liability
+├── TDS Item: TDS Payable
+├── TDS Threshold: 30,000
+├── Cumulative Threshold: 100,000
+├── Assessee Code: Company
+├── Empty PAN: 20.0%
+├── Payment Code: C01
+├── 206AB Rate: 5.0%
+└── 206AB Higher Rate: 5.0%
+
+BEST PRACTICES:
+
+- Create separate TDS masters for each section
+- Configure different rates for Company vs Individual
+- Set accurate thresholds as per IT Act
+- Update rates when government revises them
+- Test TDS calculation on sample bills
+- Document TDS types for user reference
+- Regular review of 206AB applicability
+
+IMPORTANT NOTES:
+
+- TDS Master must be created before vendor mapping
+- Rates and thresholds change periodically - stay updated
+- System auto-calculates based on configured parameters
+- TDS cannot be applied if not configured in master
+- Proper setup ensures compliance and accurate deduction
+- Threshold validation happens automatically

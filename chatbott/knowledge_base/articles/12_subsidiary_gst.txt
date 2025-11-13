@@ -1,0 +1,97 @@
+
+SUBSIDIARY GST CONFIGURATION
+
+Purpose: Configure GST details at subsidiary level for entity-wide settings.
+
+Navigation Path: Setup > Company > Subsidiaries
+
+STEPS:
+
+1. Access Subsidiary:
+   - Click "Subsidiaries" to edit existing, OR
+   - Click "New" to create new subsidiary
+
+2. Basic Information:
+   - Name: Subsidiary name (mandatory)
+   - Parent Subsidiary: TOPCO or parent entity
+   - Always Display Subsidiary Name: Checkbox
+   - Subsidiary Logo (Forms): Upload logo
+   - Subsidiary Logo (Pages): Upload logo
+   - Web Site: URL
+   - Document Number Prefix: For numbering
+
+3. GST Configuration (Address tab):
+   Navigate to "Addresses" tab
+   Click "Map Edit"
+   
+   Enter address:
+   - Country: Select (e.g., United States for parent, India for India entity)
+   - Attention: Contact person
+   - Addressee: Company name
+   - Phone: Contact number
+   - Address 1 & 2: Address lines
+   - City: City name
+   - State/Province: Select state
+   - ZIP: Postal code
+   
+   GST Fields (for India subsidiaries):
+   - GSTIN: 15-character number
+   - GST State: Select state (e.g., Maharashtra)
+   - GST State Code: Auto-populated (e.g., 27)
+   - Override: Checkbox if needed
+   
+   Click OK
+
+4. Additional Subsidiary Fields:
+   - State/Province: Dropdown selection
+   - Country: Dropdown selection
+   - Document Numbers: Configuration section
+   - Contact Information: Additional details
+   - Coupa: Integration fields
+   
+   Click Save
+
+KEY NOTES:
+- Subsidiary GSTIN is the master GSTIN for the entity
+- Used when location-specific GSTIN is not applicable
+- Critical for inter-company transactions
+
+SUBSIDIARY VS LOCATION GSTIN:
+
+Subsidiary GSTIN:
+- Entity-level registration
+- Master GSTIN for company
+- Used in compliance reporting
+- Required for all Indian entities
+
+Location GSTIN:
+- Branch-level registration
+- Overrides subsidiary GSTIN on transactions
+- Used for multi-state operations
+- Optional but recommended for branches
+
+CONFIGURATION EXAMPLE:
+
+Subsidiary: ABC India Pvt Ltd
+├── Name: ABC India Pvt Ltd
+├── Parent: ABC Global Corp
+├── Country: India
+├── Address:
+│   ├── City: Mumbai
+│   ├── State: Maharashtra
+│   └── ZIP: 400001
+└── GST Configuration:
+    ├── GSTIN: 27AABCA1234C1Z5
+    ├── GST State: Maharashtra
+    └── GST State Code: 27
+
+IMPORTANT NOTES:
+- Required for all Indian legal entities
+- Master GSTIN for the subsidiary
+- Used when location not specified
+- Critical for statutory compliance
+
+
+
+
+

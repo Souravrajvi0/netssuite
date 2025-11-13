@@ -1,0 +1,138 @@
+E-TDS RETURN GENERATION
+
+Purpose: Generate E-TDS return files for submission to government TRACES portal.
+
+Navigation Path: AG Taxation > TDS Payment > E-TDS Return
+
+GENERATION STEPS:
+
+1. Fill Criteria:
+   - Financial Year: Select year
+   - Quarter: Q1/Q2/Q3/Q4
+   - Email: Notification email address
+   - Location: Optional filter
+   - Person Responsible: Select from dropdown
+   - Designation: Auto-populated
+   - Deductor Type: Company/Individual
+   - Book Entry: Yes/No
+   - Return Type: Auto-populated
+   - File Creation Date: Current date
+   - Subsidiary: Select entity
+   - Minor Head of Challan: 200 or 400
+
+2. Generate File:
+   - Click "Generate eTDS File" OR
+   - Click "Generate & Email eTDS File" (sends email to configured address)
+
+3. Verify Status:
+   - Refresh page until status shows "Completed"
+   - Only download when status is completed
+
+4. Download and Submit:
+   - Download the .txt file
+   - Upload to government portal (TRACES)
+
+5. Update with Acknowledgment (after submission):
+   - Edit the return record
+   - Enter Submission Date
+   - Enter Submission Type
+   - Enter Receipt Number
+   - Enter Token Number
+   - Enter Token Date
+
+KEY FEATURE: File cannot be downloaded until status is "Completed".
+
+QUARTERLY FILING CALENDAR:
+
+Q1 (Apr-Jun):
+- Filing due: 31st July
+- Covers: April, May, June
+
+Q2 (Jul-Sep):
+- Filing due: 31st October
+- Covers: July, August, September
+
+Q3 (Oct-Dec):
+- Filing due: 31st January
+- Covers: October, November, December
+
+Q4 (Jan-Mar):
+- Filing due: 31st May
+- Covers: January, February, March
+
+RETURN FILE FORMAT:
+
+File Type: .txt (plain text)
+Format: Fixed-width format as per NSDL specifications
+Contains:
+- Deductor details (from Tax Company Info)
+- Challan details
+- Deductee details (vendors)
+- TDS amounts
+- Section codes
+
+FILE SECTIONS:
+
+Header Record:
+- TAN
+- PAN
+- Deductor name
+- Address
+- Return period
+
+Challan Records:
+- Challan number
+- BSR Code
+- Payment date
+- Amount
+
+Deductee Records:
+- Vendor PAN
+- Name
+- TDS amount
+- Section code
+- Rate
+
+MINOR HEAD OF CHALLAN:
+
+200: For most TDS sections
+400: For TDS on salaries (Form 24Q)
+
+SUBMISSION TO TRACES:
+
+1. Login to TRACES portal
+2. Upload E-TDS file
+3. Validate file
+4. Submit return
+5. Receive token number
+6. Update token in NetSuite
+
+FILE VALIDATION:
+
+Common errors:
+- Invalid TAN/PAN format
+- Challan mismatch
+- Amount mismatch
+- Missing vendor PAN
+- Wrong section code
+
+Resolution:
+- Verify data in NetSuite
+- Regenerate file
+- Resubmit to TRACES
+
+ACKNOWLEDGMENT DETAILS:
+
+After successful submission:
+- Receipt Number: From TRACES
+- Token Number: Transaction ID
+- Token Date: Submission date
+- Save in NetSuite record
+
+IMPORTANT NOTES:
+- Generate after all payments done
+- Verify challan details before generation
+- File must be error-free for acceptance
+- Keep acknowledgment for records
+- Late filing attracts penalty
+- Correction statements possible if needed

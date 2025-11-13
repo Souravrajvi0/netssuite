@@ -1,0 +1,160 @@
+TCS REPORT
+
+Purpose: Generate comprehensive TCS collection reports for filing and reconciliation.
+
+Navigation Path: AG Taxation > AG Reports > AGTAX TCS Report
+
+REPORT FEATURES:
+
+Access:
+- Click on "AGTAX TCS Report"
+- Report page opens automatically
+
+Report Display:
+- All TCS transactions with relevant details
+- Filter options available
+- Export functionality
+
+REPORT COLUMNS (typical):
+
+Customer Information:
+- Customer name
+- Customer PAN
+- GSTIN
+- Customer type
+
+Transaction Details:
+- Invoice number
+- Invoice date
+- Invoice value
+- Taxable amount
+
+TCS Details:
+- TCS Section
+- TCS Rate applied
+- TCS Amount collected
+- Threshold status
+
+Cumulative Tracking:
+- Cumulative amount per customer
+- Threshold monitoring
+- Annual totals
+
+Rate Information:
+- PAN status
+- ITR filing status
+- Rate applied (normal/higher)
+- 206CCA applicability
+
+FILTERING OPTIONS:
+
+By Date:
+- Start date
+- End date
+- Quarter selection
+
+By Customer:
+- Specific customer
+- Customer group
+- All customers
+
+By TCS Section:
+- 206C(1)
+- 206C(1F)
+- 206C(1G)
+- 206C(1H)
+- Others
+
+By Rate:
+- Normal rate
+- Higher rate (206CCA)
+- Non-PAN rate
+
+REPORT USAGE:
+
+Quarterly TCS Filing:
+- Extract TCS data
+- Verify collections
+- Prepare Form 27EQ
+- Submit to department
+
+Customer-wise TCS Tracking:
+- Monitor threshold
+- Track cumulative
+- Issue certificates
+- Maintain records
+
+Reconciliation:
+- Match with invoices
+- Verify calculations
+- Check rate application
+- Confirm payments
+
+Compliance Verification:
+- Threshold compliance
+- Rate accuracy
+- PAN validation
+- ITR status check
+
+EXPORT OPTIONS:
+
+Excel Format:
+- Detailed data
+- Pivot analysis
+- Custom filtering
+
+PDF Format:
+- Formatted report
+- Print-ready
+- Documentation
+
+CSV Format:
+- Data import
+- System integration
+- Custom processing
+
+TCS CERTIFICATE GENERATION:
+
+Using Report Data:
+1. Filter by customer
+2. Select date range
+3. Export details
+4. Generate Form 27D
+5. Issue to customer
+
+Certificate Contents:
+- Customer details
+- PAN
+- TCS amount
+- Section code
+- Quarter/period
+
+QUARTERLY FILING PROCESS:
+
+1. Generate Report:
+   - Select quarter
+   - Filter data
+   - Verify accuracy
+
+2. Prepare Form 27EQ:
+   - Use report data
+   - Fill challan details
+   - Validate file
+
+3. Submit Return:
+   - Upload to TIN website
+   - Receive acknowledgment
+   - Update records
+
+4. Issue Certificates:
+   - Generate Form 27D
+   - Send to customers
+   - Maintain records
+
+IMPORTANT NOTES:
+- Run report quarterly
+- Verify data accuracy
+- Export for filing
+- Issue certificates timely
+- Maintain for audit
+- Essential for compliance
