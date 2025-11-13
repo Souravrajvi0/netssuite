@@ -1,7 +1,7 @@
 [
   {
     "id": "01",
-    "file_id": "REPLACE_WITH_FILE_ID_01",
+    "internal_id": "3140",
     "title": "Financial Year Master Setup",
     "summary": "One-time annual setup activity for defining financial year parameters including start/end dates, FY code, and assessment code. Mandatory setup that must be created annually.",
     "keywords": ["financial year", "fy master", "annual setup", "assessment year", "fy code", "year setup"],
@@ -11,7 +11,7 @@
   },
   {
     "id": "02",
-    "file_id": "REPLACE_WITH_FILE_ID_02",
+    "internal_id": "3141",
     "title": "Tax Codes Configuration (CGST/SGST/IGST)",
     "summary": "Configure individual tax components for GST calculations including CGST, SGST, and IGST. Set up tax rates, agencies, purchase/sales accounts, and effective dates.",
     "keywords": ["tax codes", "cgst", "sgst", "igst", "gst setup", "tax rates", "tax agency", "tax configuration"],
@@ -21,7 +21,7 @@
   },
   {
     "id": "03",
-    "file_id": "REPLACE_WITH_FILE_ID_03",
+    "internal_id": "3142",
     "title": "Tax Groups Setup",
     "summary": "Combine multiple tax codes (CGST + SGST or IGST) into consolidated groups. System automatically calculates combined rates based on line-level selections.",
     "keywords": ["tax groups", "consolidated tax", "cgst sgst group", "tax combination", "group setup"],
@@ -31,7 +31,7 @@
   },
   {
     "id": "04",
-    "file_id": "REPLACE_WITH_FILE_ID_04",
+    "internal_id": "3143",
     "title": "HSN/SAC Code Creation",
     "summary": "Define Harmonized System of Nomenclature (HSN) codes for goods and Service Accounting Codes (SAC) for services. Tax rates auto-populate on transactions when codes are selected.",
     "keywords": ["hsn", "sac", "hsn code", "sac code", "harmonized system", "service accounting code", "product codes"],
@@ -41,7 +41,7 @@
   },
   {
     "id": "05",
-    "file_id": "REPLACE_WITH_FILE_ID_05",
+    "internal_id": "3144",
     "title": "TDS Master Configuration",
     "summary": "Configure Tax Deducted at Source (TDS) rules and rates including section codes, threshold limits, assessee codes, and special provisions for non-PAN holders and 206AB rates.",
     "keywords": ["tds master", "tds setup", "tds configuration", "tds rates", "tds section", "194c", "194j", "tds threshold", "assessee code"],
@@ -51,7 +51,7 @@
   },
   {
     "id": "06",
-    "file_id": "REPLACE_WITH_FILE_ID_06",
+    "internal_id": "3145",
     "title": "Item Master GST Setup",
     "summary": "Pre-configure GST details on inventory items including HSN/SAC codes, nature of item, GST units, and tax rates for automatic population on transactions.",
     "keywords": ["item master", "inventory items", "item gst setup", "item configuration", "item tax"],
@@ -61,7 +61,7 @@
   },
   {
     "id": "07",
-    "file_id": "REPLACE_WITH_FILE_ID_07",
+    "internal_id": "3146",
     "title": "Account Master GST Setup",
     "summary": "Set up GL accounts with GST parameters including nature of item, HSN/SAC codes, ineligible GST flags, and RCM applicability for automatic population in transactions.",
     "keywords": ["accounts", "gl accounts", "account setup", "chart of accounts", "account gst", "rcm account"],
@@ -71,7 +71,7 @@
   },
   {
     "id": "08",
-    "file_id": "REPLACE_WITH_FILE_ID_08",
+    "internal_id": "3147",
     "title": "Expense Categories Setup",
     "summary": "Configure expense categories with default GST parameters including nature of item, HSN/SAC codes, and RCM applicability to streamline expense entry.",
     "keywords": ["expense categories", "expense setup", "expense configuration", "expense gst"],
@@ -81,7 +81,7 @@
   },
   {
     "id": "09",
-    "file_id": "REPLACE_WITH_FILE_ID_09",
+    "internal_id": "3148",
     "title": "Customer Master Creation",
     "summary": "Set up customer master records with GST and PAN details for invoicing. Configure GSTIN, GST registration type, state codes, and multiple addresses.",
     "keywords": ["customer", "customer master", "customer creation", "customer gstin", "customer setup", "gst registration"],
@@ -91,7 +91,7 @@
   },
   {
     "id": "10",
-    "file_id": "REPLACE_WITH_FILE_ID_10",
+    "internal_id": "3149",
     "title": "Vendor Master Creation",
     "summary": "Set up vendor master records with GST, PAN, and TDS configurations. Map TDS types, configure lower deduction certificates, and set up special provisions like 206AB.",
     "keywords": ["vendor", "vendor master", "vendor creation", "vendor gstin", "vendor tds", "supplier setup", "ltds certificate"],
@@ -101,7 +101,7 @@
   },
   {
     "id": "11",
-    "file_id": "REPLACE_WITH_FILE_ID_11",
+    "internal_id": "3150",
     "title": "Location Master Configuration",
     "summary": "Define company locations/branches with GSTIN for multi-location GST compliance. Configure location-wise GSTIN at both body and address level for proper tax calculation.",
     "keywords": ["location", "location master", "branch setup", "location gstin", "multi-location", "branch configuration"],
@@ -111,7 +111,7 @@
   },
   {
     "id": "12",
-    "file_id": "REPLACE_WITH_FILE_ID_12",
+    "internal_id": "3151",
     "title": "Subsidiary GST Configuration",
     "summary": "Configure GST details at subsidiary level for entity-wide settings. Set up master GSTIN, addresses, and entity-level tax parameters.",
     "keywords": ["subsidiary", "subsidiary setup", "entity configuration", "subsidiary gstin", "company setup"],
@@ -121,7 +121,7 @@
   },
   {
     "id": "13",
-    "file_id": "REPLACE_WITH_FILE_ID_13",
+    "internal_id": "3152",
     "title": "Sales Invoice Creation",
     "summary": "Create sales invoices with automatic GST calculation and compliance. Configure customer, location, line items with HSN/SAC codes for automatic tax computation based on intra-state or inter-state rules.",
     "keywords": ["invoice", "sales invoice", "create invoice", "billing", "customer invoice", "gst invoice", "tax invoice"],
@@ -131,7 +131,7 @@
   },
   {
     "id": "14",
-    "file_id": "REPLACE_WITH_FILE_ID_14",
+    "internal_id": "3153",
     "title": "E-Invoice (IRN Generation & Cancellation)",
     "summary": "Generate IRN (Invoice Reference Number) and QR code for GST compliance through government E-invoice portal. Includes IRN generation process and 24-hour cancellation window procedures.",
     "keywords": ["e-invoice", "einvoice", "irn", "irn generation", "qr code", "irn cancellation", "e-invoicing", "acknowledgment number"],
@@ -141,7 +141,7 @@
   },
   {
     "id": "15",
-    "file_id": "REPLACE_WITH_FILE_ID_15",
+    "internal_id": "3154",
     "title": "Vendor Bill Creation (with TDS/RCM)",
     "summary": "Record vendor bills with GST, TDS, and RCM calculations. Apply TDS deductions, configure reverse charge mechanism, and handle multiple billing addresses with automatic tax computation.",
     "keywords": ["vendor bill", "bill entry", "purchase bill", "tds on bill", "rcm", "reverse charge", "apply tds", "vendor invoice"],
@@ -151,7 +151,7 @@
   },
   {
     "id": "16",
-    "file_id": "REPLACE_WITH_FILE_ID_16",
+    "internal_id": "3155",
     "title": "TDS Payment Processing",
     "summary": "Process TDS payment to tax authorities and generate challan records. Search transactions, mark for payment, enter bank and BSR details, and create TDS challan with complete audit trail.",
     "keywords": ["tds payment", "challan", "tds challan", "pay tds", "tds deposit", "bsr code", "tax payment", "tds bank payment"],
@@ -161,7 +161,7 @@
   },
   {
     "id": "17",
-    "file_id": "REPLACE_WITH_FILE_ID_17",
+    "internal_id": "3156",
     "title": "TDS Challan Details",
     "summary": "View, manage, and verify TDS challan records with complete audit trail from bill to payment to challan. Drill down into vendor bills, payment records, and bank details.",
     "keywords": ["tds challan", "challan details", "challan record", "view challan", "tds receipt", "challan verification"],
@@ -171,7 +171,7 @@
   },
   {
     "id": "18",
-    "file_id": "REPLACE_WITH_FILE_ID_18",
+    "internal_id": "3157",
     "title": "TDS Bill Payment Report",
     "summary": "Generate filtered reports of TDS payments by date and type. Useful for reconciliation and verification before filing returns with detailed vendor-wise breakdown.",
     "keywords": ["tds report", "tds bill report", "tds payment report", "tds reconciliation", "vendor tds report"],
@@ -181,7 +181,7 @@
   },
   {
     "id": "19",
-    "file_id": "REPLACE_WITH_FILE_ID_19",
+    "internal_id": "3158",
     "title": "Tax Company Info Setup",
     "summary": "Configure company details required for E-TDS return filing including TAN, PAN, company name, address, responsible person details, and deductor information.",
     "keywords": ["tax company info", "company info", "tan", "deductor details", "etds setup", "company registration"],
@@ -191,7 +191,7 @@
   },
   {
     "id": "20",
-    "file_id": "REPLACE_WITH_FILE_ID_20",
+    "internal_id": "3159",
     "title": "E-TDS Return Generation",
     "summary": "Generate E-TDS return files for submission to government TRACES portal. Select financial year, quarter, generate file, download when completed, and update with acknowledgment details.",
     "keywords": ["etds", "e-tds return", "tds return", "traces", "quarterly return", "tds file", "26q", "27q", "24q"],
@@ -201,7 +201,7 @@
   },
   {
     "id": "21",
-    "file_id": "REPLACE_WITH_FILE_ID_21",
+    "internal_id": "3160",
     "title": "Quarterly TDS Return Report",
     "summary": "Generate quarterly TDS summary reports with filtering options by date range, subsidiary, location, quarter, TDS section, and assessee type for compliance verification.",
     "keywords": ["quarterly report", "tds quarterly", "quarter report", "tds summary", "quarterly tds return"],
@@ -211,7 +211,7 @@
   },
   {
     "id": "22",
-    "file_id": "REPLACE_WITH_FILE_ID_22",
+    "internal_id": "3161",
     "title": "TCS Configuration & Application",
     "summary": "Configure and apply TCS (Tax Collected at Source) as per Income Tax Act provisions on sales transactions. Set up TCS rules, rates, thresholds, and 206CCA higher rates for non-filers.",
     "keywords": ["tcs", "tax collected at source", "tcs setup", "tcs configuration", "tcs rate", "206c", "tcs on sales"],
@@ -221,7 +221,7 @@
   },
   {
     "id": "23",
-    "file_id": "REPLACE_WITH_FILE_ID_23",
+    "internal_id": "3162",
     "title": "TCS Report",
     "summary": "Generate comprehensive TCS collection reports for filing and reconciliation. View all TCS transactions with customer details, rates applied, and cumulative tracking.",
     "keywords": ["tcs report", "tcs collection report", "tcs filing", "tcs reconciliation"],
@@ -231,7 +231,7 @@
   },
   {
     "id": "24",
-    "file_id": "REPLACE_WITH_FILE_ID_24",
+    "internal_id": "3163",
     "title": "Ineligible GST (Blocked ITC)",
     "summary": "Handle blocked Input Tax Credit scenarios where GST cannot be recovered under Section 17(5) of CGST Act. System posts GST back to expense account instead of ITC account.",
     "keywords": ["ineligible gst", "blocked itc", "blocked credit", "section 17(5)", "non-recoverable gst", "itc blocked"],
@@ -241,7 +241,7 @@
   },
   {
     "id": "25",
-    "file_id": "REPLACE_WITH_FILE_ID_25",
+    "internal_id": "3164",
     "title": "AG Reports (GSTR-1, GSTR-2, GSTR-3B)",
     "summary": "Generate statutory GST returns and compliance reports including GSTR-1 (sales), GSTR-2 (purchases), and GSTR-3B (summary return) with filtering options and Excel export.",
     "keywords": ["gstr-1", "gstr-2", "gstr-3b", "gst returns", "gst filing", "b2b", "b2c", "gst report", "tax return"],

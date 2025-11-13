@@ -450,8 +450,8 @@ Your ranking:`;
         html += '</div>';
 
         articles.forEach((article, index) => {
-            // Use file_id if available, otherwise use id as fallback
-            const fileId = article.file_id || article.id;
+            // Use file_id or internal_id if available, otherwise use id as fallback
+            const fileId = article.file_id || article.internal_id || article.id;
 
             html += '<div class="result-item" onclick="loadArticle(\'' + fileId + '\', \'' + escapeHtml(article.title) + '\')">';
             html += '<div class="result-number">' + (index + 1) + '</div>';
